@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI 工具箱 — 叶文哲</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0820;
+  --card:rgba(20,16,48,0.55);
+  --card-hover:rgba(30,22,68,0.78);
+  --border:rgba(168,150,220,0.16);
+  --border-hover:rgba(255,144,160,0.4);
+  --text:var(--kimi-text,#f4eef9);
+  --text-mute:rgba(220,210,240,0.65);
+  --text-soft:rgba(180,170,210,0.5);
+  --accent:var(--kimi-accent,#ffb098);
+  --thread:var(--kimi-thread,#ff8a7a);
+  --tag-cn:rgba(255,176,152,0.16);
+  --tag-cn-text:#ffd0bc;
+  --tag-en:rgba(168,144,255,0.16);
+  --tag-en-text:#c8b8ff;
+}
+html,body{background:var(--bg)}
+body{color:var(--text);font-family:'Inter','Noto Sans SC',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{max-width:1320px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+
+nav{padding:32px 0;display:flex;justify-content:space-between;align-items:center}
+nav .logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;font-weight:400;letter-spacing:0.02em;color:var(--text);text-decoration:none;transition:color 0.3s}
+nav .logo:hover{color:var(--accent)}
+nav .menu{display:flex;gap:36px;font-size:13px}
+nav .menu a{color:var(--text-mute);text-decoration:none;transition:color 0.3s;font-weight:300;letter-spacing:0.02em;position:relative;padding-bottom:2px}
+nav .menu a.active{color:var(--accent)}
+nav .menu a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)}
+nav .menu a:hover{color:var(--text)}
+nav .menu a:hover::after,nav .menu a.active::after{transform:scaleX(1);transform-origin:left}
+
+/* Hero */
+.hero{padding:80px 0 48px;position:relative}
+.hero .label{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:20px;font-weight:400;opacity:0;animation:fadeUp 0.8s ease forwards 0.1s}
+.hero .label::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px;opacity:0.7}
+.hero .jp-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--accent);letter-spacing:0.05em;margin-bottom:8px;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;font-weight:300}
+.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(48px,7vw,96px);font-weight:300;letter-spacing:0.02em;line-height:1.05;margin-bottom:24px;opacity:0;animation:fadeUp 0.9s ease forwards 0.28s}
+.hero h1 .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:0.42em;color:var(--text-mute);display:block;margin-top:14px;letter-spacing:0.05em}
+.hero .lede{font-family:'Noto Sans SC',sans-serif;font-size:15px;color:var(--text-mute);max-width:720px;line-height:1.95;font-weight:300;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s}
+.hero .meta{display:flex;gap:24px;align-items:center;margin-top:32px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--text-soft);letter-spacing:0.05em;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s;flex-wrap:wrap}
+.hero .meta .dot-sep{width:3px;height:3px;background:var(--text-soft);border-radius:50%;display:inline-block}
+.hero .meta .src{font-family:'Inter',sans-serif;font-style:normal;font-size:11px;letter-spacing:0.2em;text-transform:uppercase}
+
+/* Filter bar */
+.toolbar{display:flex;justify-content:space-between;align-items:center;padding:24px 0 20px;border-bottom:1px solid var(--border);margin-bottom:32px;flex-wrap:wrap;gap:16px;opacity:0;animation:fadeUp 0.8s ease forwards 0.6s}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{padding:8px 16px;border-radius:24px;background:transparent;border:1px solid var(--border);color:var(--text-mute);font-family:'Noto Sans SC',sans-serif;font-size:12px;font-weight:300;cursor:pointer;transition:all 0.3s;letter-spacing:0.02em}
+.tab:hover{border-color:var(--border-hover);color:var(--text)}
+.tab.active{background:rgba(255,160,180,0.14);border-color:rgba(255,160,180,0.45);color:var(--accent)}
+.tab .count{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;margin-left:6px;opacity:0.7}
+.region-toggle{display:flex;gap:4px;background:rgba(20,16,48,0.5);border:1px solid var(--border);border-radius:24px;padding:3px}
+.region-toggle button{padding:6px 14px;border-radius:20px;background:none;border:none;color:var(--text-mute);font-family:'Inter',sans-serif;font-size:11px;letter-spacing:0.05em;cursor:pointer;transition:all 0.3s;font-weight:400}
+.region-toggle button.active{background:rgba(255,160,180,0.18);color:var(--accent)}
+
+/* Categories */
+.category{margin-bottom:64px;opacity:0;animation:fadeUp 0.7s ease forwards}
+.category:nth-of-type(1){animation-delay:0.7s}
+.category:nth-of-type(2){animation-delay:0.78s}
+.category:nth-of-type(3){animation-delay:0.86s}
+.category:nth-of-type(4){animation-delay:0.94s}
+.category:nth-of-type(5){animation-delay:1.02s}
+.category:nth-of-type(6){animation-delay:1.10s}
+.category-head{display:flex;align-items:baseline;gap:18px;margin-bottom:28px}
+.category-head .num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0.1em}
+.category-head .name{font-family:'Noto Serif SC',serif;font-size:26px;font-weight:400;color:var(--text);letter-spacing:0.04em}
+.category-head .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--text-soft);letter-spacing:0.05em;font-weight:300}
+.category-head .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);align-self:center}
+
+.scenarios{display:flex;flex-direction:column;gap:24px}
+.scenario{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}
+.scene-label{padding-top:6px}
+.scene-label .scene-name{font-family:'Noto Serif SC',serif;font-size:16px;font-weight:400;color:var(--text);margin-bottom:6px;letter-spacing:0.02em}
+.scene-label .scene-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:12px;color:var(--text-soft);letter-spacing:0.05em}
+.scene-label .scene-marker{width:24px;height:1px;background:var(--accent);opacity:0.6;margin:10px 0}
+.scene-label .scene-note{font-family:'Noto Sans SC',sans-serif;font-size:11px;color:var(--text-soft);line-height:1.7;margin-top:10px;font-weight:300;font-style:italic}
+
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.product{background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:14px;padding:18px 20px 16px;text-decoration:none;color:var(--text);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;position:relative;overflow:hidden;min-height:118px}
+.product::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:bottom;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)}
+.product:hover{background:var(--card-hover);border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 16px 40px -16px rgba(0,0,0,0.5),0 0 30px -10px var(--thread)}
+.product:hover::before{transform:scaleY(1);transform-origin:top}
+.product-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.product-head{flex:1;min-width:0;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.product-name{font-family:'Inter','Noto Sans SC',sans-serif;font-size:15px;font-weight:500;color:var(--text);letter-spacing:0.01em;line-height:1.3}
+.tag{flex-shrink:0;padding:2px 9px;border-radius:10px;font-family:'Inter',sans-serif;font-size:9.5px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase}
+.tag.cn{background:var(--tag-cn);color:var(--tag-cn-text)}
+.tag.en{background:var(--tag-en);color:var(--tag-en-text)}
+.product-highlight{font-family:'Noto Sans SC',sans-serif;font-size:12.5px;color:var(--text-mute);line-height:1.7;font-weight:300;flex:1}
+.product-link{margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-soft);letter-spacing:0.04em;display:flex;justify-content:space-between;align-items:center;opacity:0;transition:opacity 0.3s}
+.product:hover .product-link{opacity:1}
+.product-link .arrow{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--accent)}
+
+/* Brand Logos */
+.brand-logo{width:28px;height:28px;border-radius:7px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06)}
+.brand-logo img{width:100%;height:100%;object-fit:cover}
+.brand-logo-fallback{font-family:'Inter',sans-serif;font-size:12px;font-weight:600;color:var(--text-mute)}
+
+/* Empty state */
+.empty{text-align:center;padding:80px 20px;color:var(--text-soft);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px}
+
+footer{padding:40px 0 56px;border-top:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--text-soft);display:flex;justify-content:space-between;letter-spacing:0.05em;margin-top:60px}
+footer a{color:inherit;text-decoration:none;transition:color 0.3s}
+footer a:hover{color:var(--accent)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){
+  .scenario{grid-template-columns:1fr;gap:14px}
+  .scene-label .scene-marker{display:none}
+}
+@media(max-width:768px){
+  .hero{padding:48px 0 32px}
+  .hero h1{font-size:48px}
+  nav .menu{gap:18px;font-size:12px}
+  .container{padding:0 22px}
+  .products{grid-template-columns:1fr}
+  .toolbar{flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+<script>(function(){var s=localStorage.getItem('kimiPalette');if(s)window.__KIMI_PALETTE__=s;})();</script>
+<script src="kimi-no-na-wa.js"></script>
+<script src="logos/brand_logos.js"></script>
+
+<div class="container">
+  <nav>
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html" class="active">AI 工具箱</a>
+      <a href="course.html">课程拆解</a>
+      <a href="works.html">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Toolbox · 01</div>
+    <div class="jp-title">道具箱</div>
+    <h1>AI 工具箱<span class="en">Curated AI Stack · 2026</span></h1>
+    <p class="lede">把每天真正在用、真正好用的 AI 工具，按场景排成一张地图。<br>不收录 demo，不堆"网红榜单"——每一项都是我和朋友们日常工作流里跑通过的选择。</p>
+    <div class="meta">
+      <span class="src">Last updated · <span id="last-updated">—</span></span>
+      <span class="dot-sep"></span>
+      <span>来源 · 数字生命卡兹克 · 2026-04-30</span>
+      <span class="dot-sep"></span>
+      <span>每 3 天 AI 自动刷新</span>
+    </div>
+  </section>
+
+  <div class="toolbar">
+    <div class="tabs" id="tabs"></div>
+    <div class="region-toggle" id="region">
+      <button data-region="all" class="active">全部</button>
+      <button data-region="国内">国内</button>
+      <button data-region="海外">海外</button>
+    </div>
+  </div>
+
+  <script type="application/json" id="toolbox-data">{
+  "lastUpdated": "2026-05-04",
+  "source": "数字生命卡兹克 2026-04-30",
+  "categories": [
+    {
+      "id": "knowledge",
+      "name": "知识与研究",
+      "scenarios": [
+        {
+          "scene": "AI 搜索引擎",
+          "products": [
+            {
+              "name": "Perplexity",
+              "tag": "海外",
+              "highlight": "AI 时代的搜索引擎，复杂调研首选",
+              "url": "https://www.perplexity.ai"
+            },
+            {
+              "name": "Genspark AI",
+              "tag": "海外",
+              "highlight": "Perplexity 替代品，对 IP 要求更低",
+              "url": "https://www.genspark.ai"
+            }
+          ]
+        },
+        {
+          "scene": "知识问答",
+          "products": [
+            {
+              "name": "GPT-5.5",
+              "tag": "海外",
+              "highlight": "幻觉极低，问答准确度业界领先",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "豆包",
+              "tag": "国内",
+              "highlight": "国内知识问答首选，免费好用",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "深度研究",
+          "products": [
+            {
+              "name": "ChatGPT DeepResearch",
+              "tag": "海外",
+              "highlight": "深度研究功能，长链推理能力最强",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "豆包",
+              "tag": "国内",
+              "highlight": "国内深度研究替代方案",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 资讯获取",
+          "products": [
+            {
+              "name": "AIHOT",
+              "tag": "国内",
+              "highlight": "AI 领域资讯聚合，信息密度高",
+              "url": "https://aihot.cn"
+            }
+          ]
+        },
+        {
+          "scene": "实时信息获取",
+          "products": [
+            {
+              "name": "Grok",
+              "tag": "海外",
+              "highlight": "X 平台实时搜索，获取最新动态",
+              "url": "https://x.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "name": "内容创作",
+      "scenarios": [
+        {
+          "scene": "内容创作与知识管理",
+          "products": [
+            {
+              "name": "Claude Opus 4.6",
+              "tag": "海外",
+              "highlight": "独一档的夯，别用 Opus 4.7，真的拉",
+              "url": "https://claude.ai"
+            },
+            {
+              "name": "DeepSeek V4 Pro",
+              "tag": "国内",
+              "highlight": "国内创作首选，性价比极高",
+              "url": "https://chat.deepseek.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 翻译",
+          "products": [
+            {
+              "name": "沉浸式翻译",
+              "tag": "国内",
+              "highlight": "支持多家 AI 引擎翻译，浏览器插件",
+              "url": "https://immersivetranslate.com/zh-Hans/"
+            }
+          ]
+        },
+        {
+          "scene": "知识库管理",
+          "products": [
+            {
+              "name": "NotebookLM",
+              "tag": "海外",
+              "highlight": "Google 出品，上传资料自动摘要、问答、生成播客",
+              "url": "https://notebooklm.google.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 数字人",
+          "products": [
+            {
+              "name": "HeyGen",
+              "tag": "海外",
+              "highlight": "AI 数字人视频生成，口播视频神器",
+              "url": "https://www.heygen.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "code",
+      "name": "代码开发",
+      "scenarios": [
+        {
+          "scene": "数据分析",
+          "products": [
+            {
+              "name": "Codex + GPT-5.5",
+              "tag": "海外",
+              "highlight": "数据分析执行效率顶级",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内数据分析最佳组合",
+              "url": "https://open.bigmodel.cn"
+            }
+          ]
+        },
+        {
+          "scene": "架构规划",
+          "products": [
+            {
+              "name": "Claude Code + Opus 4.7",
+              "tag": "海外",
+              "highlight": "架构规划能力最强，思维链清晰",
+              "url": "https://claude.ai"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内架构规划替代方案",
+              "url": "https://open.bigmodel.cn"
+            }
+          ]
+        },
+        {
+          "scene": "代码开发执行",
+          "products": [
+            {
+              "name": "Codex + GPT-5.5",
+              "tag": "海外",
+              "highlight": "执行能力顶级，配合 Codex 工作流爽",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内代码执行最佳组合",
+              "url": "https://open.bigmodel.cn"
+            }
+          ],
+          "note": "cc + Opus 4.7 做规划，Codex + GPT-5.5 做开发执行"
+        },
+        {
+          "scene": "AI 代码编辑器",
+          "products": [
+            {
+              "name": "Cursor",
+              "tag": "海外",
+              "highlight": "内置 Claude + GPT，AI 写代码效率极高",
+              "url": "https://cursor.com"
+            },
+            {
+              "name": "Lovable",
+              "tag": "海外",
+              "highlight": "描述需求直接生成可部署的 Web 应用",
+              "url": "https://lovable.dev"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "visual",
+      "name": "视觉创作",
+      "scenarios": [
+        {
+          "scene": "前端设计",
+          "products": [
+            {
+              "name": "Gemini 3.1 Pro",
+              "tag": "海外",
+              "highlight": "前端设计生成质量高，理解力强",
+              "url": "https://gemini.google.com"
+            },
+            {
+              "name": "Kimi K2.6",
+              "tag": "国内",
+              "highlight": "国内前端设计首选",
+              "url": "https://kimi.moonshot.cn"
+            }
+          ]
+        },
+        {
+          "scene": "图片与平面设计",
+          "products": [
+            {
+              "name": "GPT-image-2",
+              "tag": "海外",
+              "highlight": "独一档的夯，图片生成质量断层领先",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "即梦 Seedream-5.0-lite",
+              "tag": "国内",
+              "highlight": "国内图片生成天花板",
+              "url": "https://jimeng.jianying.com"
+            },
+            {
+              "name": "Midjourney",
+              "tag": "海外",
+              "highlight": "业界领先的 AI 图像生成，出图质量极高",
+              "url": "https://www.midjourney.com"
+            },
+            {
+              "name": "Nano Banana",
+              "tag": "海外",
+              "highlight": "基于 Gemini，免费高质量 AI 生图",
+              "url": "https://aistudio.google.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 设计平台",
+          "products": [
+            {
+              "name": "Canva",
+              "tag": "海外",
+              "highlight": "AI 设计平台，模板丰富，快速出图出 PPT",
+              "url": "https://www.canva.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 演示文稿",
+          "products": [
+            {
+              "name": "Gamma",
+              "tag": "海外",
+              "highlight": "输入主题直接生成专业幻灯片",
+              "url": "https://gamma.app"
+            },
+            {
+              "name": "Kimi Slides",
+              "tag": "国内",
+              "highlight": "国内可用，快速生成结构化 PPT",
+              "url": "https://kimi.moonshot.cn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multimedia",
+      "name": "多媒体生成",
+      "scenarios": [
+        {
+          "scene": "视频生成",
+          "products": [
+            {
+              "name": "Seedance 2.0",
+              "tag": "国内",
+              "highlight": "运动质感出色",
+              "url": "https://jimeng.jianying.com"
+            },
+            {
+              "name": "可灵 3.0",
+              "tag": "国内",
+              "highlight": "电影质感，原生 4K",
+              "url": "https://klingai.kuaishou.com"
+            },
+            {
+              "name": "Hailuo",
+              "tag": "国内",
+              "highlight": "MiniMax 出品，简单描述生成精彩短视频",
+              "url": "https://hailuoai.video"
+            }
+          ]
+        },
+        {
+          "scene": "音乐生成",
+          "products": [
+            {
+              "name": "Suno v5.5",
+              "tag": "海外",
+              "highlight": "音乐生成标杆，风格覆盖最广",
+              "url": "https://suno.com"
+            },
+            {
+              "name": "MiniMax Music 2.6",
+              "tag": "国内",
+              "highlight": "国内音乐生成首选",
+              "url": "https://www.minimaxi.com"
+            }
+          ]
+        },
+        {
+          "scene": "3D 生成",
+          "products": [
+            {
+              "name": "TripoAI",
+              "tag": "国内",
+              "highlight": "3D 生成领域独一档",
+              "url": "https://www.tripo3d.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "name": "工具与硬件",
+      "scenarios": [
+        {
+          "scene": "AI 输入法",
+          "products": [
+            {
+              "name": "豆包输入法",
+              "tag": "国内",
+              "highlight": "语音输入夯爆了",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 硬件",
+          "products": [
+            {
+              "name": "飞书录音豆",
+              "tag": "国内",
+              "highlight": "录音转写神器，会议场景首选",
+              "url": "https://www.feishu.cn"
+            },
+            {
+              "name": "GetSeed 录音卡",
+              "tag": "国内",
+              "highlight": "便携 AI 录音硬件",
+              "url": "https://www.getseed.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "name": "Agent 平台",
+      "scenarios": [
+        {
+          "scene": "AI Agent 构建",
+          "products": [
+            {
+              "name": "Coze",
+              "tag": "海外",
+              "highlight": "用 GPT/Claude 模型做 Agent/Bot，功能强大",
+              "url": "https://www.coze.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "efficiency",
+      "name": "效率工具",
+      "scenarios": [
+        {
+          "scene": "AI 工作空间",
+          "products": [
+            {
+              "name": "Notion",
+              "tag": "海外",
+              "highlight": "全能工作空间，集成 AI 助手，知识库+项目管理",
+              "url": "https://www.notion.so"
+            }
+          ]
+        },
+        {
+          "scene": "工作流自动化",
+          "products": [
+            {
+              "name": "Zapier",
+              "tag": "海外",
+              "highlight": "连接 5000+ 应用，无代码自动化",
+              "url": "https://zapier.com"
+            },
+            {
+              "name": "n8n",
+              "tag": "海外",
+              "highlight": "开源工作流自动化，可自部署",
+              "url": "https://n8n.io"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}</script>
+<main id="main"></main>
+
+  <footer>
+    <span><a href="index.html">← 返回首页</a></span>
+    <span>Wenzhe Ye · 2026</span>
+  </footer>
+</div>
+
+<script>
+(async function(){
+  var data;
+  try{
+    data = JSON.parse(document.getElementById('toolbox-data').textContent);
+  }catch(e){
+    document.getElementById('main').innerHTML='<div class="empty">— 工具箱数据加载失败 —</div>';
+    return;
+  }
+  var lu=document.getElementById('last-updated');
+  if(lu)lu.textContent=data.lastUpdated||'—';
+
+  var state = { cat: 'all', region: 'all' };
+
+  // Build tabs
+  var tabs = document.getElementById('tabs');
+  function totalCount(){
+    var n=0;
+    data.categories.forEach(function(c){
+      c.scenarios.forEach(function(s){ s.products.forEach(function(p){
+        if(state.region==='all'||p.tag===state.region) n++;
+      })});
+    });
+    return n;
+  }
+  function catCount(cat){
+    var n=0;
+    cat.scenarios.forEach(function(s){ s.products.forEach(function(p){
+      if(state.region==='all'||p.tag===state.region) n++;
+    })});
+    return n;
+  }
+
+  function renderTabs(){
+    var html='<button class="tab '+(state.cat==='all'?'active':'')+'" data-cat="all">全部 <span class="count">'+totalCount()+'</span></button>';
+    data.categories.forEach(function(c){
+      html+='<button class="tab '+(state.cat===c.id?'active':'')+'" data-cat="'+c.id+'">'+c.name+' <span class="count">'+catCount(c)+'</span></button>';
+    });
+    tabs.innerHTML=html;
+    tabs.querySelectorAll('.tab').forEach(function(b){
+      b.addEventListener('click',function(){ state.cat=b.dataset.cat; render(); });
+    });
+  }
+
+  document.getElementById('region').addEventListener('click',function(e){
+    var b=e.target.closest('button[data-region]');if(!b)return;
+    state.region=b.dataset.region;
+    document.querySelectorAll('#region button').forEach(function(x){x.classList.toggle('active',x===b)});
+    render();
+  });
+
+  function tagClass(t){ return t==='国内'?'cn':'en'; }
+  function tagText(t){ return t==='国内'?'CN':'GLOBAL'; }
+
+  // English category names for sub-headers
+  var EN_CAT = {
+    knowledge: 'Knowledge & Research',
+    content: 'Content & Writing',
+    code: 'Code & Engineering',
+    visual: 'Visual & Design',
+    multimedia: 'Multimedia',
+    tools: 'Hardware & Input',
+    agent: 'Agent Platforms',
+    efficiency: 'Productivity'
+  };
+  var EN_SCENE = {
+    'AI 搜索引擎':'Search','知识问答':'Q&A','深度研究':'Deep Research','AI 资讯获取':'AI News','实时信息获取':'Realtime',
+    '内容创作与知识管理':'Writing','AI 翻译':'Translate','知识库管理':'Knowledge Base','AI 数字人':'Avatar',
+    '数据分析':'Data','架构规划':'Architecture','代码开发执行':'Coding','AI 代码编辑器':'IDE',
+    '前端设计':'Frontend','图片与平面设计':'Image','AI 设计平台':'Design','AI 演示文稿':'Slides',
+    '视频生成':'Video','音乐生成':'Music','3D 生成':'3D',
+    'AI 输入法':'Input','AI 硬件':'Hardware',
+    'AI Agent 构建':'Agent Builder',
+    'AI 工作空间':'Workspace','工作流自动化':'Automation'
+  };
+
+  function renderCategory(cat, idx){
+    var visibleScenarios = cat.scenarios.map(function(s){
+      var ps = s.products.filter(function(p){ return state.region==='all'||p.tag===state.region; });
+      return { scene:s.scene, note:s.note, products:ps };
+    }).filter(function(s){ return s.products.length>0; });
+    if(visibleScenarios.length===0) return '';
+
+    var num = String(idx+1).padStart(2,'0');
+    var html = '<section class="category" data-cat="'+cat.id+'">';
+    html += '<div class="category-head"><span class="num">'+num+' —</span><span class="name">'+cat.name+'</span><span class="en">'+(EN_CAT[cat.id]||'')+'</span><span class="line"></span></div>';
+    html += '<div class="scenarios">';
+    visibleScenarios.forEach(function(s){
+      html += '<div class="scenario">';
+      html += '<div class="scene-label"><div class="scene-name">'+s.scene+'</div><div class="scene-en">'+(EN_SCENE[s.scene]||'')+'</div><div class="scene-marker"></div>';
+      if(s.note) html += '<div class="scene-note">'+s.note+'</div>';
+      html += '</div>';
+      html += '<div class="products">';
+      s.products.forEach(function(p){
+        var domain = '';
+        try{ domain = new URL(p.url).host.replace(/^www\./,''); }catch(_){}
+        html += '<a class="product" href="'+p.url+'" target="_blank" rel="noopener">';
+        html += '<div class="product-top">'+buildLogo(p.name)+'<div class="product-head"><div class="product-name">'+p.name+'</div><span class="tag '+tagClass(p.tag)+'">'+tagText(p.tag)+'</span></div></div>';
+        html += '<div class="product-highlight">'+p.highlight+'</div>';
+        html += '<div class="product-link"><span>'+domain+'</span><span class="arrow">→</span></div>';
+        html += '</a>';
+      });
+      html += '</div></div>';
+    });
+    html += '</div></section>';
+    return html;
+  }
+
+  function render(){
+    renderTabs();
+    var main = document.getElementById('main');
+    var cats = state.cat==='all' ? data.categories : data.categories.filter(function(c){return c.id===state.cat});
+    var html = '';
+    cats.forEach(function(c, i){
+      var idx = state.cat==='all' ? i : data.categories.findIndex(function(x){return x.id===c.id});
+      html += renderCategory(c, idx);
+    });
+    if(!html.trim()) html = '<div class="empty">— 当前筛选下没有工具 —</div>';
+    main.innerHTML = html;
+  }
+
+  render();
+})();
+
+// Tweaks panel — shared
+(function(){
+  var TWEAKS=/*EDITMODE-BEGIN*/{"palette":"twilight"}/*EDITMODE-END*/;
+})();
+function buildPanel(){
+  if(document.getElementById('kimi-tweaks'))return;
+  var p=document.createElement('div');p.id='kimi-tweaks';
+  p.style.cssText='position:fixed;right:20px;bottom:20px;z-index:1000;background:rgba(15,12,40,0.92);backdrop-filter:blur(20px);border:1px solid rgba(255,160,180,0.25);border-radius:16px;padding:20px 22px;font-family:Inter,sans-serif;font-size:12px;color:#f4eef9;min-width:240px;box-shadow:0 20px 60px rgba(0,0,0,0.5);display:none';
+  var current=window.__KIMI_PALETTE__||'twilight';
+  function opt(v,label,grad,cur){var sel=v===cur;return '<button data-pal="'+v+'" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid '+(sel?'rgba(255,160,180,0.5)':'rgba(255,255,255,0.08)')+';background:'+(sel?'rgba(255,160,180,0.1)':'transparent')+';cursor:pointer;color:#f4eef9;font-family:inherit;font-size:12px;text-align:left;transition:all 0.2s"><span style="width:32px;height:20px;border-radius:5px;background:'+grad+';border:1px solid rgba(255,255,255,0.15);flex-shrink:0"></span><span>'+label+'</span></button>';}
+  p.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:15px;color:#ffb098">Tweaks</span><button id="kimi-close" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    +'<div style="font-size:10px;letter-spacing:0.2em;color:rgba(220,210,240,0.5);text-transform:uppercase;margin-bottom:10px">Palette · 色调</div>'
+    +'<div style="display:flex;flex-direction:column;gap:8px">'
+    +opt('twilight','深夜紫蓝 Twilight','linear-gradient(135deg,#0a0820,#43286a,#a85d8c)',current)
+    +opt('comet','彗星冷蓝 Comet','linear-gradient(135deg,#050818,#2c4380,#aab8e8)',current)
+    +opt('shrine','黄昏暖橙 Shrine','linear-gradient(135deg,#3a1338,#a04a5a,#f0b878)',current)
+    +'</div>';
+  document.body.appendChild(p);
+  p.addEventListener('click',function(e){var b=e.target.closest('[data-pal]');if(!b)return;var v=b.getAttribute('data-pal');try{window.parent.postMessage({type:'__edit_mode_set_keys',edits:{palette:v}},'*')}catch(_){}localStorage.setItem('kimiPalette',v);location.reload();});
+  document.getElementById('kimi-close').onclick=function(){p.style.display='none';try{window.parent.postMessage({type:'__edit_mode_dismissed'},'*')}catch(_){}};
+}
+window.addEventListener('message',function(e){if(!e.data||!e.data.type)return;if(e.data.type==='__activate_edit_mode'){buildPanel();document.getElementById('kimi-tweaks').style.display='block'}if(e.data.type==='__deactivate_edit_mode'){var el=document.getElementById('kimi-tweaks');if(el)el.style.display='none'}});
+try{window.parent.postMessage({type:'__edit_mode_available'},'*')}catch(_){}
+</script>
+</body>
+</html>

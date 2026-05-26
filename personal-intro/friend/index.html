@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人介绍</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   Reset & Base
+   ============================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #ffffff;
+  --bg-soft: #fafafa;
+  --bg-card: #f5f5f5;
+  --text: #1a1a1a;
+  --text-secondary: #666666;
+  --text-tertiary: #999999;
+  --accent: #2563eb;
+  --accent-light: rgba(37, 99, 235, 0.08);
+  --accent-border: rgba(37, 99, 235, 0.2);
+  --border: #e5e5e5;
+  --border-light: #f0f0f0;
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================
+   Navigation
+   ============================================ */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 20px 0;
+  transition: all 0.4s ease;
+}
+
+nav.scrolled {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-light);
+  padding: 14px 0;
+}
+
+nav .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .name {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+nav .links {
+  display: flex;
+  gap: 32px;
+}
+
+nav .links a {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  transition: color 0.3s;
+  position: relative;
+}
+
+nav .links a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1.5px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+nav .links a:hover {
+  color: var(--text);
+}
+
+nav .links a:hover::after {
+  width: 100%;
+}
+
+/* ============================================
+   Hero Section
+   ============================================ */
+.hero {
+  padding: 180px 0 120px;
+  text-align: center;
+}
+
+.hero .label {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  font-weight: 400;
+}
+
+.hero h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(48px, 8vw, 88px);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  margin-bottom: 20px;
+}
+
+.hero .position {
+  font-size: clamp(16px, 2vw, 20px);
+  color: var(--accent);
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: 32px;
+}
+
+.hero .intro {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.9;
+  font-weight: 300;
+}
+
+.hero .divider {
+  width: 48px;
+  height: 2px;
+  background: var(--border);
+  margin: 48px auto 0;
+}
+
+/* ============================================
+   Section Titles
+   ============================================ */
+.section-header {
+  margin-bottom: 48px;
+}
+
+.section-header .en {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.section-header h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+/* ============================================
+   Highlight Section (社团/学生工作 + 志愿者)
+   ============================================ */
+.highlights {
+  padding: 80px 0;
+}
+
+.highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.highlight-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 40px 32px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.highlight-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.highlight-card:hover {
+  border-color: var(--accent-border);
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+}
+
+.highlight-card:hover::before {
+  opacity: 1;
+}
+
+.highlight-card .icon {
+  font-size: 28px;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.highlight-card .card-label {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.highlight-card h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 22px;
+  font-weight: 500;
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+.highlight-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* ============================================
+   About Section
+   ============================================ */
+.about {
+  padding: 80px 0;
+  background: var(--bg-soft);
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+
+.about-text p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 2;
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+.about-text p:last-child {
+  margin-bottom: 0;
+}
+
+.about-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-item {
+  padding: 24px 28px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  transition: all 0.3s ease;
+}
+
+.detail-item:hover {
+  border-color: var(--accent-border);
+  background: var(--accent-light);
+}
+
+.detail-item .detail-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 400;
+}
+
+.detail-item .detail-value {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+/* ============================================
+   Values Section
+   ============================================ */
+.values {
+  padding: 80px 0;
+}
+
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.value-item {
+  text-align: center;
+  padding: 36px 24px;
+  border-radius: var(--radius);
+  transition: all 0.3s ease;
+}
+
+.value-item:hover {
+  background: var(--bg-soft);
+}
+
+.value-item .value-num {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--border);
+  margin-bottom: 16px;
+}
+
+.value-item h3 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  letter-spacing: 0.02em;
+}
+
+.value-item p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+/* ============================================
+   Footer
+   ============================================ */
+footer {
+  padding: 60px 0;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+footer .footer-label {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+footer .contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+footer .contact-links a {
+  font-size: 14px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 400;
+  padding: 10px 24px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  transition: all 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+footer .contact-links a:hover {
+  color: var(--accent);
+  border-color: var(--accent-border);
+  background: var(--accent-light);
+}
+
+footer .copyright {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  letter-spacing: 0.05em;
+}
+
+/* ============================================
+   Mobile Responsive
+   ============================================ */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 20px;
+  }
+
+  .hero {
+    padding: 140px 0 80px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+
+  .hero .intro {
+    font-size: 14px;
+  }
+
+  .highlight-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .about-content {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .value-item {
+    padding: 24px 20px;
+  }
+
+  nav .links {
+    gap: 20px;
+  }
+
+  nav .links a {
+    font-size: 12px;
+  }
+
+  footer .contact-links {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .section-header h2 {
+    font-size: 26px;
+  }
+
+  nav .name {
+    font-size: 16px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     Navigation
+     ============================================ -->
+<nav id="nav">
+  <div class="container">
+    <span class="name">你的名字</span>
+    <div class="links">
+      <a href="#highlights">经历</a>
+      <a href="#about">关于</a>
+      <a href="#contact">联系</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================
+     Hero Section
+     ============================================ -->
+<section class="hero">
+  <div class="container">
+    <p class="label reveal">Hello, nice to meet you</p>
+    <h1 class="reveal reveal-delay-1">你的名字</h1>
+    <p class="position reveal reveal-delay-2">浙江工商大学 · 市场营销</p>
+    <p class="intro reveal reveal-delay-3">
+      [这里写一句话定位自己。比如：一个喜欢折腾、喜欢尝试新事物的大一学生。<br>
+      相信「做比想重要」，所以什么都愿意试一试。]
+    </p>
+    <div class="divider reveal reveal-delay-4"></div>
+  </div>
+</section>
+
+<!-- ============================================
+     Highlights Section
+     ============================================ -->
+<section class="highlights" id="highlights">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="en">Highlights</p>
+      <h2>做过的事</h2>
+    </div>
+
+    <div class="highlight-grid">
+      <div class="highlight-card reveal">
+        <span class="icon">&#9734;</span>
+        <p class="card-label">Student Work</p>
+        <h3>社团 / 学生工作</h3>
+        <p>[在这里写你的社团经历和学生工作。比如：担任 XX 社团的 XX 职位，组织过哪些活动，收获了什么。内容要真实，不用夸大。]</p>
+      </div>
+
+      <div class="highlight-card reveal reveal-delay-1">
+        <span class="icon">&#9829;</span>
+        <p class="card-label">Volunteer</p>
+        <h3>杭州马拉松志愿者</h3>
+        <p>[在这里写志愿者经历。比如：参与了哪一年的杭州马拉松志愿服务，负责什么岗位，过程中印象最深的事是什么。]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     About Section
+     ============================================ -->
+<section class="about" id="about">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="en">About Me</p>
+      <h2>关于我</h2>
+    </div>
+
+    <div class="about-content">
+      <div class="about-text reveal">
+        <p>
+          [写一段自然的自我介绍。不用写得很正式，像跟朋友聊天一样就好。可以说说你的专业背景、为什么选这个专业、平时喜欢做什么。]
+        </p>
+        <p>
+          [可以聊聊你的兴趣爱好、最近在关注什么、对什么事情有热情。让读这个网页的人感受到你是一个真实的人。]
+        </p>
+        <p>
+          [最后可以说说你对未来的期待，或者你正在尝试的事情。不用写得很宏大，真诚就好。]
+        </p>
+      </div>
+
+      <div class="about-details reveal reveal-delay-1">
+        <div class="detail-item">
+          <p class="detail-label">School</p>
+          <p class="detail-value">浙江工商大学</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-label">Major</p>
+          <p class="detail-value">市场营销</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-label">Year</p>
+          <p class="detail-value">大一</p>
+        </div>
+        <div class="detail-item">
+          <p class="detail-label">Interests</p>
+          <p class="detail-value">[填你的兴趣爱好，用 · 隔开，比如：摄影 · 旅行 · 音乐 · 篮球]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Values Section
+     ============================================ -->
+<section class="values">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="en">Values</p>
+      <h2>我相信的事</h2>
+    </div>
+
+    <div class="values-grid">
+      <div class="value-item reveal">
+        <div class="value-num">01</div>
+        <h3>[价值观一]</h3>
+        <p>[用一两句话解释你为什么相信这件事。比如：试过才知道行不行，想太多不如先动手。]</p>
+      </div>
+      <div class="value-item reveal reveal-delay-1">
+        <div class="value-num">02</div>
+        <h3>[价值观二]</h3>
+        <p>[用一两句话解释。比如：跟有趣的人一起做有意思的事，比一个人埋头苦干重要得多。]</p>
+      </div>
+      <div class="value-item reveal reveal-delay-2">
+        <div class="value-num">03</div>
+        <h3>[价值观三]</h3>
+        <p>[用一两句话解释。比如：不需要每件事都做到完美，但每件事都要认真对待。]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================
+     Footer
+     ============================================ -->
+<footer id="contact">
+  <div class="container">
+    <p class="footer-label reveal">Get in touch</p>
+    <div class="contact-links reveal reveal-delay-1">
+      <a href="mailto:your-email@example.com">Email</a>
+      <a href="#">WeChat</a>
+      <a href="#">小红书</a>
+      <a href="#">GitHub</a>
+    </div>
+    <p class="copyright reveal reveal-delay-2">Your Name &middot; 2026</p>
+  </div>
+</footer>
+
+<!-- ============================================
+     JavaScript
+     ============================================ -->
+<script>
+// Scroll reveal animation using IntersectionObserver
+(function() {
+  var reveals = document.querySelectorAll('.reveal');
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.15,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    reveals.forEach(function(el) {
+      observer.observe(el);
+    });
+  } else {
+    // Fallback for older browsers
+    reveals.forEach(function(el) {
+      el.classList.add('visible');
+    });
+  }
+})();
+
+// Navbar scroll effect
+(function() {
+  var nav = document.getElementById('nav');
+  var lastScroll = 0;
+
+  window.addEventListener('scroll', function() {
+    var currentScroll = window.pageYOffset;
+
+    if (currentScroll > 60) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+
+    lastScroll = currentScroll;
+  }, { passive: true });
+})();
+
+// Smooth scroll for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    var target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

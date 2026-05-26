@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>致卢翌晨</title>
+<link rel="preload" href="./bgm1.mp3" as="audio" type="audio/mpeg">
+<style>
+/* ===== RESET ===== */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;font-family:Georgia,'Playfair Display',serif}
+body{background:linear-gradient(180deg,#FFF8F5 0%,#FFF0E8 50%,#FFF5F0 100%);color:#4A4A4A}
+
+/* ===== STAGES ===== */
+.stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;
+  opacity:0;pointer-events:none;transition:opacity .8s ease}
+.stage.active{opacity:1;pointer-events:auto}
+#stage-cake.active{transition:opacity .3s ease}
+#stage-car{background:linear-gradient(180deg,#FFF8F5 0%,#FFF0E8 50%,#FFF5F0 100%)}
+
+/* ===== CAKE STAGE DECORATIONS ===== */
+/* Bokeh — 柔光光斑，营造梦幻深度感 */
+.bokeh{position:absolute;border-radius:50%;pointer-events:none;
+  filter:blur(1px);opacity:0;z-index:1}
+#stage-cake.active .bokeh{animation:bokehIn 2.5s ease forwards}
+@keyframes bokehIn{0%{opacity:0;transform:scale(.7)}100%{opacity:1;transform:scale(1)}}
+.bokeh-inner{width:100%;height:100%;border-radius:50%;filter:blur(8px)}
+
+/* Twinkle — 闪烁星点 */
+.twk{position:absolute;border-radius:50%;pointer-events:none;z-index:1;
+  opacity:0;animation:twkPulse 3s ease-in-out infinite}
+@keyframes twkPulse{0%,100%{opacity:0;transform:scale(.5)}50%{opacity:1;transform:scale(1)}}
+
+/* Name tag — 蛋糕上方的名字 */
+#name-tag{position:absolute;top:10%;left:50%;transform:translateX(-50%);z-index:2;
+  text-align:center;opacity:0;animation:tagIn 2s ease 1.2s forwards}
+#name-tag .nt-main{font-size:clamp(28px,5vw,44px);color:rgba(160,110,90,.8);
+  letter-spacing:.18em;font-weight:300}
+#name-tag .nt-sub{font-size:clamp(12px,1.8vw,16px);color:rgba(180,140,120,.5);
+  letter-spacing:.35em;margin-top:6px}
+@keyframes tagIn{0%{opacity:0;transform:translateX(-50%) translateY(10px)}100%{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* Corner flourish — 左下右下装饰角线 */
+.corner{position:absolute;width:80px;height:80px;pointer-events:none;z-index:2;opacity:0}
+#stage-cake.active .corner{animation:cornerIn 2s ease .8s forwards}
+@keyframes cornerIn{0%{opacity:0}100%{opacity:.35}}
+.corner-tl{top:5%;left:5%;border-top:1px solid rgba(180,140,120,.4);border-left:1px solid rgba(180,140,120,.4)}
+.corner-tr{top:5%;right:5%;border-top:1px solid rgba(180,140,120,.4);border-right:1px solid rgba(180,140,120,.4)}
+.corner-bl{bottom:5%;left:5%;border-bottom:1px solid rgba(180,140,120,.3);border-left:1px solid rgba(180,140,120,.3)}
+.corner-br{bottom:5%;right:5%;border-bottom:1px solid rgba(180,140,120,.3);border-right:1px solid rgba(180,140,120,.3)}
+
+/* Bottom date text */
+#date-tag{position:absolute;bottom:17%;left:50%;transform:translateX(-50%);z-index:2;
+  font-size:12px;color:rgba(180,140,120,.45);letter-spacing:.3em;
+  opacity:0;animation:dateIn 2s ease 1.8s forwards}
+@keyframes dateIn{0%{opacity:0}100%{opacity:1}}
+
+/* ===== CANVAS ===== */
+#cake-canvas{width:100%;height:100%;position:absolute;inset:0;cursor:grab;z-index:3}
+#cake-canvas:active{cursor:grabbing}
+
+/* ===== HINT ===== */
+.hint{position:absolute;bottom:10vh;left:50%;transform:translateX(-50%);
+  font-size:13px;color:rgba(180,140,120,.55);letter-spacing:.15em;white-space:nowrap;
+  animation:hPulse 3.5s ease-in-out infinite;z-index:4}
+@keyframes hPulse{0%,100%{opacity:.4}50%{opacity:.85}}
+
+/* ===== FALLING PETALS ===== */
+.petal{position:fixed;pointer-events:none;z-index:2;opacity:0;
+  will-change:transform,opacity}
+@keyframes petalFall{
+  0%{opacity:0;transform:translate(0,-30px) rotate(0deg) scale(.7)}
+  8%{opacity:1}
+  85%{opacity:.8}
+  100%{opacity:0;transform:translate(var(--drift),110vh) rotate(var(--spin)) scale(.5)}
+}
+
+/* ===== BG PARTICLES ===== */
+.bp{position:fixed;border-radius:50%;pointer-events:none;z-index:0}
+
+/* ===== CAROUSEL ===== */
+#carousel-wrap{width:100%;height:100%;overflow:hidden;position:relative;display:flex;align-items:center}
+.carousel-track{display:flex;align-items:center;gap:44px;padding:0 80px;will-change:transform;backface-visibility:hidden;-webkit-backface-visibility:hidden;transform:translate3d(0,0,0)}
+.polaroid{
+  flex-shrink:0;width:240px;background:#fff;border-radius:4px;padding:14px 14px 76px;
+  box-shadow:0 14px 32px rgba(0,0,0,.13),0 4px 10px rgba(0,0,0,.07);
+  position:relative;display:inline-flex;flex-direction:column;align-items:center;
+  transition:transform .3s ease;
+  transform:translateZ(0); /* 提升为独立合成层，避免每帧重绘阴影 */
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+}
+.polaroid::before{content:'';position:absolute;top:-30px;left:50%;width:1px;height:30px;background:rgba(0,0,0,.12)}
+.polaroid img{width:212px;height:212px;object-fit:cover;border-radius:2px;display:block}
+.polaroid .ph{width:212px;height:212px;background:#E8E0D8;border-radius:2px;display:flex;
+  align-items:center;justify-content:center;font-size:13px;color:#B0A89E}
+.polaroid .cap{width:212px;font-size:12px;color:#7A7A7A;line-height:1.5;
+  text-align:center;margin-top:10px;letter-spacing:.02em}
+.polaroid .lb{position:absolute;bottom:14px;left:0;right:0;text-align:center;
+  font-size:14px;color:#5A5A5A;letter-spacing:.04em}
+.polaroid:hover{transform:translateZ(0) scale(1.04)!important}
+
+/* ===== SVG ORNAMENT (carousel stage) ===== */
+.ornament{position:absolute;left:0;right:0;width:100%;pointer-events:none;z-index:10}
+.ornament-top{top:0;height:14vh}
+.ornament-bottom{bottom:0;height:14vh;transform:scaleY(-1)}
+
+/* ===== GREETING ===== */
+#greet-wrap{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 16vw}
+.g-title{font-size:clamp(34px,7vw,56px);color:#E89B7A;letter-spacing:.08em;margin-bottom:18px}
+.g-line{font-size:clamp(15px,2.2vw,18px);line-height:2;color:#4A4A4A;
+  opacity:0;transform:translateY(10px);transition:opacity .6s ease,transform .6s ease}
+.g-line.show{opacity:1;transform:translateY(0)}
+.g-div{width:60px;height:1px;background:rgba(232,155,122,.4);margin:26px auto}
+.g-sign{font-size:13px;color:#888;letter-spacing:.22em;opacity:0;transition:opacity .8s ease .3s}
+.g-sign.show{opacity:1}
+#back-to-cake{position:absolute;bottom:48px;left:50%;transform:translateX(-50%);
+  padding:12px 36px;font-size:14px;letter-spacing:.15em;
+  color:rgba(160,110,90,.85);background:rgba(255,240,230,.85);
+  border:1px solid rgba(180,140,120,.3);border-radius:24px;
+  cursor:pointer;opacity:0;transition:opacity .6s ease .5s,background .25s;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  font-family:'Noto Serif SC',serif;z-index:10}
+#back-to-cake:hover{background:rgba(255,230,215,.95)}
+#stage-greet.active #back-to-cake{opacity:1}
+#star{position:fixed;width:4px;height:4px;border-radius:50%;
+  background:#fff;
+  box-shadow:
+    0 0 8px 4px rgba(255,245,230,.95),
+    0 0 22px 8px rgba(255,200,140,.5),
+    /* 尾迹：一串偏移的发光点 */
+    -8px 1px 3px 2px rgba(255,230,200,.7),
+    -20px 2px 3px 2px rgba(255,220,180,.55),
+    -40px 3px 2px 2px rgba(255,210,160,.4),
+    -70px 4px 2px 1.5px rgba(255,200,150,.28),
+    -110px 5px 2px 1.5px rgba(240,190,140,.18),
+    -160px 5px 2px 1px rgba(230,180,130,.1),
+    -220px 6px 2px 1px rgba(220,170,120,.05);
+  opacity:0;pointer-events:none;top:8%;right:-10px;z-index:99}
+@keyframes shoot{
+  0%{opacity:0;transform:translate(0,0) rotate(-25deg)}
+  4%{opacity:1}
+  55%{opacity:.9}
+  80%{opacity:.35}
+  100%{opacity:0;transform:translate(-110vw,55vh) rotate(-25deg)}}
+
+/* ===== AUDIO ===== */
+#audio-btn{
+  position:fixed;top:18px;right:18px;z-index:100;width:36px;height:36px;border-radius:50%;
+  border:none;cursor:pointer;background:rgba(180,140,120,.12);backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .4s;
+  font-size:15px;color:#A08870}
+body:hover #audio-btn{opacity:.7}
+#audio-btn:hover{opacity:1!important;background:rgba(180,140,120,.2)}
+
+/* ===== NOTE WALL ===== */
+#note-wall{position:absolute;left:0;top:0;bottom:0;width:23%;
+  z-index:5;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:14px;padding:30px 0}
+#note-wall-title{font-size:clamp(13px,1.5vw,16px);color:rgba(160,110,90,.6);
+  letter-spacing:.22em;font-weight:300;margin-bottom:10px;flex-shrink:0}
+.note-item{background:var(--nc);border-radius:4px;padding:18px 20px 26px;
+  width:92%;max-width:240px;margin:0 auto 16px;
+  box-shadow:0 3px 10px rgba(0,0,0,.12),0 1px 3px rgba(0,0,0,.08);
+  transform:rotate(var(--nr));opacity:0;animation:noteIn .8s ease forwards;
+  animation-delay:var(--nd);position:relative;pointer-events:auto}
+.note-item::before{content:'';position:absolute;top:-5px;left:50%;transform:translateX(-50%);
+  width:18px;height:7px;background:rgba(200,60,60,.5);border-radius:0 0 2px 2px}
+.note-msg{font-size:14px;line-height:1.7;color:#4A4A4A;font-style:italic}
+.note-from{text-align:right;font-size:12px;color:#999;margin-top:10px;font-style:normal}
+@keyframes noteIn{0%{opacity:0;transform:rotate(var(--nr)) translateY(10px)}100%{opacity:1;transform:rotate(var(--nr)) translateY(0)}}
+
+@media(max-width:640px){
+  .polaroid{width:min(55vw,175px);padding:8px 8px 55px}
+  .polaroid img,.polaroid .ph{width:100%;height:auto;aspect-ratio:1/1}
+  .polaroid .cap{width:100%;font-size:10px}
+  .polaroid .lb{font-size:11px;bottom:10px}
+  .carousel-track{gap:16px;padding:0 16px}
+  #greet-wrap{padding:0 8vw}
+  #note-wall{width:100%;left:0;top:auto;bottom:0;height:auto;padding:8px 6px;flex-direction:row;gap:6px}
+  #note-wall-title{display:none}
+  .note-item{padding:8px 10px 14px;max-width:none;width:0;flex:1;margin:0;font-size:11px;animation-delay:0s;opacity:1;transform:none}
+  .note-msg{font-size:10px;line-height:1.3}
+  .note-from{font-size:8px;margin-top:4px}
+  .note-pin{top:-5px;width:14px;height:5px;border-radius:3px}
+}
+</style>
+</head>
+<body>
+
+<button id="audio-btn" title="切换静音"><span id="a-icon">&#9835;</span></button>
+<div id="bg-p"></div>
+
+<!-- STAGE 1: CAKE -->
+<div class="stage active" id="stage-cake">
+  <!-- Bokeh + twinkles injected by JS below -->
+  <div id="cake-deco"></div>
+  <!-- Corner flourishes -->
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+  <!-- Name tag -->
+  <div id="name-tag">
+    <div class="nt-main">卢 翌 晨</div>
+    <div class="nt-sub">HAPPY BIRTHDAY</div>
+  </div>
+  <!-- Date -->
+  <div id="date-tag">2 0 2 6 . 6 . 3</div>
+
+  <!-- Note Wall — 左侧便利贴（3张静态） -->
+  <div id="note-wall">
+    <div id="note-wall-title">Friends' Wishes</div>
+    <div class="note-item" style="--nc:#FFEAA7;--nr:-2.5deg;--nd:.15s">
+      <div class="note-msg">"生日快乐！新的一岁要更开心，我会一直在这里。"</div>
+      <div class="note-from">— 施轩</div>
+    </div>
+    <div class="note-item" style="--nc:#FFC3D0;--nr:1.8deg;--nd:.35s">
+      <div class="note-msg">"认识你是今年最幸运的事，祝你天天开心！"</div>
+      <div class="note-from">— 张博</div>
+    </div>
+    <div class="note-item" style="--nc:#C8F7C5;--nr:-1.2deg;--nd:.5s">
+      <div class="note-msg">"愿你所有期待都能如约而至，生日快乐！"</div>
+      <div class="note-from">— 陈泽宇</div>
+    </div>
+  </div>
+
+  <canvas id="cake-canvas"></canvas>
+  <div class="hint">可拖拽旋转蛋糕 · 点击蛋糕开启回忆</div>
+</div>
+
+<!-- STAGE 2: CAROUSEL -->
+<div class="stage" id="stage-car">
+  <!-- SVG 树枝装饰 — 顶部（主干上下都有分枝） -->
+  <svg class="ornament ornament-top" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- 连续主干 -->
+    <path d="M0,95 C60,90 100,82 160,72 C200,65 230,58 280,52 C340,44 400,48 460,50 C520,52 560,46 600,42 C640,38 680,42 740,50 C800,58 840,52 900,46 C950,41 990,48 1040,55 C1080,61 1120,72 1160,82 C1180,87 1190,92 1200,95"
+      fill="none" stroke="rgba(130,100,72,.6)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M0,95 C60,90 100,82 160,72 C200,65 230,58 280,52 C340,44 400,48 460,50 C520,52 560,46 600,42 C640,38 680,42 740,50 C800,58 840,52 900,46 C950,41 990,48 1040,55 C1080,61 1120,72 1160,82 C1180,87 1190,92 1200,95"
+      fill="none" stroke="rgba(130,100,72,.25)" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- === 向上分枝 === -->
+    <path d="M120,78 C130,65 145,52 165,38" fill="none" stroke="rgba(130,100,72,.5)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M200,64 C215,50 225,40 240,28" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M250,55 C260,42 270,35 285,25" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M145,55 C155,48 162,42 170,35" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M170,70 C178,62 185,55 192,45" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M380,49 C395,36 405,26 420,18" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M440,50 C448,40 458,32 468,24" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M350,48 C358,38 365,30 375,22" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M560,45 C570,30 580,18 595,10 C605,5 610,8 615,14" fill="none" stroke="rgba(130,100,72,.5)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M600,42 C612,30 620,22 630,16" fill="none" stroke="rgba(130,100,72,.4)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M580,43 C588,34 594,28 602,20" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M700,52 C710,40 720,30 732,22" fill="none" stroke="rgba(130,100,72,.42)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M760,53 C768,42 775,34 785,26" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M900,46 C910,32 925,22 940,14" fill="none" stroke="rgba(130,100,72,.48)" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M960,48 C972,36 982,28 995,20" fill="none" stroke="rgba(130,100,72,.42)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M1020,54 C1030,42 1040,34 1050,26" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M870,48 C878,40 885,34 892,26" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M930,48 C938,40 945,32 952,24" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M1080,65 C1090,55 1100,46 1112,38" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M1140,78 C1148,68 1155,60 1165,52" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+
+    <!-- === 向下分枝 === -->
+    <path d="M160,72 C170,82 178,90 185,100" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M230,58 C238,68 245,78 250,88" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M350,48 C355,60 360,72 362,82" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M460,50 C468,62 474,74 478,85" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M600,42 C608,54 614,66 618,78" fill="none" stroke="rgba(130,100,72,.4)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M660,40 C665,52 668,62 670,72" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M740,50 C748,62 754,74 758,86" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M840,52 C845,64 848,74 850,84" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M940,46 C948,58 954,70 958,82" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M1040,55 C1048,66 1054,76 1058,88" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+
+    <!-- 向上叶片 -->
+    <g fill="rgba(120,145,100,.4)" stroke="none">
+      <ellipse cx="165" cy="35" rx="10" ry="5" transform="rotate(-35 165 35)"/>
+      <ellipse cx="170" cy="38" rx="8" ry="4" transform="rotate(15 170 38)"/>
+      <ellipse cx="240" cy="25" rx="9" ry="4.5" transform="rotate(-40 240 25)"/>
+      <ellipse cx="245" cy="28" rx="7" ry="3.5" transform="rotate(10 245 28)"/>
+      <ellipse cx="285" cy="22" rx="8" ry="4" transform="rotate(-45 285 22)"/>
+      <ellipse cx="290" cy="25" rx="7" ry="3.5" transform="rotate(15 290 25)"/>
+      <ellipse cx="135" cy="50" rx="8" ry="4" transform="rotate(-25 135 50)"/>
+      <ellipse cx="420" cy="15" rx="9" ry="4.5" transform="rotate(-30 420 15)"/>
+      <ellipse cx="425" cy="18" rx="7" ry="3.5" transform="rotate(12 425 18)"/>
+      <ellipse cx="468" cy="21" rx="8" ry="4" transform="rotate(-38 468 21)"/>
+      <ellipse cx="375" cy="19" rx="8" ry="4" transform="rotate(-28 375 19)"/>
+      <ellipse cx="595" cy="8" rx="10" ry="5" transform="rotate(-25 595 8)"/>
+      <ellipse cx="600" cy="12" rx="8" ry="4" transform="rotate(20 600 12)"/>
+      <ellipse cx="615" cy="12" rx="9" ry="4.5" transform="rotate(30 615 12)"/>
+      <ellipse cx="630" cy="13" rx="9" ry="4.5" transform="rotate(-35 630 13)"/>
+      <ellipse cx="635" cy="16" rx="7" ry="3.5" transform="rotate(10 635 16)"/>
+      <ellipse cx="602" cy="18" rx="7" ry="3.5" transform="rotate(-15 602 18)"/>
+      <ellipse cx="732" cy="19" rx="9" ry="4.5" transform="rotate(-32 732 19)"/>
+      <ellipse cx="737" cy="22" rx="7" ry="3.5" transform="rotate(12 737 22)"/>
+      <ellipse cx="785" cy="23" rx="8" ry="4" transform="rotate(-38 785 23)"/>
+      <ellipse cx="940" cy="11" rx="10" ry="5" transform="rotate(35 940 11)"/>
+      <ellipse cx="935" cy="14" rx="8" ry="4" transform="rotate(-15 935 14)"/>
+      <ellipse cx="995" cy="17" rx="9" ry="4.5" transform="rotate(40 995 17)"/>
+      <ellipse cx="990" cy="20" rx="7" ry="3.5" transform="rotate(-10 990 20)"/>
+      <ellipse cx="1050" cy="23" rx="8" ry="4" transform="rotate(42 1050 23)"/>
+      <ellipse cx="1045" cy="26" rx="7" ry="3.5" transform="rotate(-12 1045 26)"/>
+      <ellipse cx="892" cy="23" rx="8" ry="4" transform="rotate(30 892 23)"/>
+      <ellipse cx="1112" cy="35" rx="8" ry="4" transform="rotate(35 1112 35)"/>
+      <ellipse cx="1108" cy="38" rx="7" ry="3.5" transform="rotate(-10 1108 38)"/>
+      <ellipse cx="1165" cy="49" rx="7" ry="3.5" transform="rotate(30 1165 49)"/>
+    </g>
+
+    <!-- 向下叶片 -->
+    <g fill="rgba(120,145,100,.38)" stroke="none">
+      <ellipse cx="185" cy="103" rx="9" ry="4.5" transform="rotate(30 185 103)"/>
+      <ellipse cx="188" cy="100" rx="7" ry="3.5" transform="rotate(-12 188 100)"/>
+      <ellipse cx="250" cy="91" rx="8" ry="4" transform="rotate(40 250 91)"/>
+      <ellipse cx="253" cy="88" rx="7" ry="3.5" transform="rotate(-8 253 88)"/>
+      <ellipse cx="362" cy="85" rx="8" ry="4" transform="rotate(35 362 85)"/>
+      <ellipse cx="365" cy="82" rx="7" ry="3.5" transform="rotate(-10 365 82)"/>
+      <ellipse cx="478" cy="88" rx="8" ry="4" transform="rotate(38 478 88)"/>
+      <ellipse cx="481" cy="85" rx="7" ry="3.5" transform="rotate(-12 481 85)"/>
+      <ellipse cx="618" cy="81" rx="10" ry="5" transform="rotate(28 618 81)"/>
+      <ellipse cx="621" cy="78" rx="8" ry="4" transform="rotate(-15 621 78)"/>
+      <ellipse cx="670" cy="75" rx="7" ry="3.5" transform="rotate(32 670 75)"/>
+      <ellipse cx="758" cy="89" rx="8" ry="4" transform="rotate(36 758 89)"/>
+      <ellipse cx="761" cy="86" rx="7" ry="3.5" transform="rotate(-10 761 86)"/>
+      <ellipse cx="850" cy="87" rx="7" ry="3.5" transform="rotate(30 850 87)"/>
+      <ellipse cx="958" cy="85" rx="8" ry="4" transform="rotate(35 958 85)"/>
+      <ellipse cx="961" cy="82" rx="7" ry="3.5" transform="rotate(-12 961 82)"/>
+      <ellipse cx="1058" cy="91" rx="8" ry="4" transform="rotate(38 1058 91)"/>
+      <ellipse cx="1061" cy="88" rx="7" ry="3.5" transform="rotate(-10 1061 88)"/>
+    </g>
+  </svg>
+  <!-- SVG 树枝装饰 — 底部（主干上下都有分枝，scaleY翻转） -->
+  <svg class="ornament ornament-bottom" viewBox="0 0 1200 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0,95 C60,90 100,82 160,72 C200,65 230,58 280,52 C340,44 400,48 460,50 C520,52 560,46 600,42 C640,38 680,42 740,50 C800,58 840,52 900,46 C950,41 990,48 1040,55 C1080,61 1120,72 1160,82 C1180,87 1190,92 1200,95"
+      fill="none" stroke="rgba(130,100,72,.6)" stroke-width="4" stroke-linecap="round"/>
+    <path d="M0,95 C60,90 100,82 160,72 C200,65 230,58 280,52 C340,44 400,48 460,50 C520,52 560,46 600,42 C640,38 680,42 740,50 C800,58 840,52 900,46 C950,41 990,48 1040,55 C1080,61 1120,72 1160,82 C1180,87 1190,92 1200,95"
+      fill="none" stroke="rgba(130,100,72,.25)" stroke-width="7" stroke-linecap="round"/>
+
+    <!-- === 向上分枝 === -->
+    <path d="M120,78 C130,65 145,52 165,38" fill="none" stroke="rgba(130,100,72,.5)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M200,64 C215,50 225,40 240,28" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M250,55 C260,42 270,35 285,25" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M145,55 C155,48 162,42 170,35" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M170,70 C178,62 185,55 192,45" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M380,49 C395,36 405,26 420,18" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M440,50 C448,40 458,32 468,24" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M350,48 C358,38 365,30 375,22" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M560,45 C570,30 580,18 595,10 C605,5 610,8 615,14" fill="none" stroke="rgba(130,100,72,.5)" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M600,42 C612,30 620,22 630,16" fill="none" stroke="rgba(130,100,72,.4)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M580,43 C588,34 594,28 602,20" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M700,52 C710,40 720,30 732,22" fill="none" stroke="rgba(130,100,72,.42)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M760,53 C768,42 775,34 785,26" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M900,46 C910,32 925,22 940,14" fill="none" stroke="rgba(130,100,72,.48)" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M960,48 C972,36 982,28 995,20" fill="none" stroke="rgba(130,100,72,.42)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M1020,54 C1030,42 1040,34 1050,26" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M870,48 C878,40 885,34 892,26" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M930,48 C938,40 945,32 952,24" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M1080,65 C1090,55 1100,46 1112,38" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M1140,78 C1148,68 1155,60 1165,52" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.4" stroke-linecap="round"/>
+
+    <!-- === 向下分枝 === -->
+    <path d="M160,72 C170,82 178,90 185,100" fill="none" stroke="rgba(130,100,72,.45)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M230,58 C238,68 245,78 250,88" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M350,48 C355,60 360,72 362,82" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M460,50 C468,62 474,74 478,85" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M600,42 C608,54 614,66 618,78" fill="none" stroke="rgba(130,100,72,.4)" stroke-width="2" stroke-linecap="round"/>
+    <path d="M660,40 C665,52 668,62 670,72" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M740,50 C748,62 754,74 758,86" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M840,52 C845,64 848,74 850,84" fill="none" stroke="rgba(130,100,72,.3)" stroke-width="1.5" stroke-linecap="round"/>
+    <path d="M940,46 C948,58 954,70 958,82" fill="none" stroke="rgba(130,100,72,.38)" stroke-width="1.8" stroke-linecap="round"/>
+    <path d="M1040,55 C1048,66 1054,76 1058,88" fill="none" stroke="rgba(130,100,72,.35)" stroke-width="1.6" stroke-linecap="round"/>
+
+    <!-- 向上叶片 -->
+    <g fill="rgba(120,145,100,.4)" stroke="none">
+      <ellipse cx="165" cy="35" rx="10" ry="5" transform="rotate(-35 165 35)"/>
+      <ellipse cx="170" cy="38" rx="8" ry="4" transform="rotate(15 170 38)"/>
+      <ellipse cx="240" cy="25" rx="9" ry="4.5" transform="rotate(-40 240 25)"/>
+      <ellipse cx="245" cy="28" rx="7" ry="3.5" transform="rotate(10 245 28)"/>
+      <ellipse cx="285" cy="22" rx="8" ry="4" transform="rotate(-45 285 22)"/>
+      <ellipse cx="290" cy="25" rx="7" ry="3.5" transform="rotate(15 290 25)"/>
+      <ellipse cx="135" cy="50" rx="8" ry="4" transform="rotate(-25 135 50)"/>
+      <ellipse cx="420" cy="15" rx="9" ry="4.5" transform="rotate(-30 420 15)"/>
+      <ellipse cx="425" cy="18" rx="7" ry="3.5" transform="rotate(12 425 18)"/>
+      <ellipse cx="468" cy="21" rx="8" ry="4" transform="rotate(-38 468 21)"/>
+      <ellipse cx="375" cy="19" rx="8" ry="4" transform="rotate(-28 375 19)"/>
+      <ellipse cx="595" cy="8" rx="10" ry="5" transform="rotate(-25 595 8)"/>
+      <ellipse cx="600" cy="12" rx="8" ry="4" transform="rotate(20 600 12)"/>
+      <ellipse cx="615" cy="12" rx="9" ry="4.5" transform="rotate(30 615 12)"/>
+      <ellipse cx="630" cy="13" rx="9" ry="4.5" transform="rotate(-35 630 13)"/>
+      <ellipse cx="635" cy="16" rx="7" ry="3.5" transform="rotate(10 635 16)"/>
+      <ellipse cx="602" cy="18" rx="7" ry="3.5" transform="rotate(-15 602 18)"/>
+      <ellipse cx="732" cy="19" rx="9" ry="4.5" transform="rotate(-32 732 19)"/>
+      <ellipse cx="737" cy="22" rx="7" ry="3.5" transform="rotate(12 737 22)"/>
+      <ellipse cx="785" cy="23" rx="8" ry="4" transform="rotate(-38 785 23)"/>
+      <ellipse cx="940" cy="11" rx="10" ry="5" transform="rotate(35 940 11)"/>
+      <ellipse cx="935" cy="14" rx="8" ry="4" transform="rotate(-15 935 14)"/>
+      <ellipse cx="995" cy="17" rx="9" ry="4.5" transform="rotate(40 995 17)"/>
+      <ellipse cx="990" cy="20" rx="7" ry="3.5" transform="rotate(-10 990 20)"/>
+      <ellipse cx="1050" cy="23" rx="8" ry="4" transform="rotate(42 1050 23)"/>
+      <ellipse cx="1045" cy="26" rx="7" ry="3.5" transform="rotate(-12 1045 26)"/>
+      <ellipse cx="892" cy="23" rx="8" ry="4" transform="rotate(30 892 23)"/>
+      <ellipse cx="1112" cy="35" rx="8" ry="4" transform="rotate(35 1112 35)"/>
+      <ellipse cx="1108" cy="38" rx="7" ry="3.5" transform="rotate(-10 1108 38)"/>
+      <ellipse cx="1165" cy="49" rx="7" ry="3.5" transform="rotate(30 1165 49)"/>
+    </g>
+
+    <!-- 向下叶片 -->
+    <g fill="rgba(120,145,100,.38)" stroke="none">
+      <ellipse cx="185" cy="103" rx="9" ry="4.5" transform="rotate(30 185 103)"/>
+      <ellipse cx="188" cy="100" rx="7" ry="3.5" transform="rotate(-12 188 100)"/>
+      <ellipse cx="250" cy="91" rx="8" ry="4" transform="rotate(40 250 91)"/>
+      <ellipse cx="253" cy="88" rx="7" ry="3.5" transform="rotate(-8 253 88)"/>
+      <ellipse cx="362" cy="85" rx="8" ry="4" transform="rotate(35 362 85)"/>
+      <ellipse cx="365" cy="82" rx="7" ry="3.5" transform="rotate(-10 365 82)"/>
+      <ellipse cx="478" cy="88" rx="8" ry="4" transform="rotate(38 478 88)"/>
+      <ellipse cx="481" cy="85" rx="7" ry="3.5" transform="rotate(-12 481 85)"/>
+      <ellipse cx="618" cy="81" rx="10" ry="5" transform="rotate(28 618 81)"/>
+      <ellipse cx="621" cy="78" rx="8" ry="4" transform="rotate(-15 621 78)"/>
+      <ellipse cx="670" cy="75" rx="7" ry="3.5" transform="rotate(32 670 75)"/>
+      <ellipse cx="758" cy="89" rx="8" ry="4" transform="rotate(36 758 89)"/>
+      <ellipse cx="761" cy="86" rx="7" ry="3.5" transform="rotate(-10 761 86)"/>
+      <ellipse cx="850" cy="87" rx="7" ry="3.5" transform="rotate(30 850 87)"/>
+      <ellipse cx="958" cy="85" rx="8" ry="4" transform="rotate(35 958 85)"/>
+      <ellipse cx="961" cy="82" rx="7" ry="3.5" transform="rotate(-12 961 82)"/>
+      <ellipse cx="1058" cy="91" rx="8" ry="4" transform="rotate(38 1058 91)"/>
+      <ellipse cx="1061" cy="88" rx="7" ry="3.5" transform="rotate(-10 1061 88)"/>
+    </g>
+  </svg>
+  <div id="carousel-wrap">
+    <div class="carousel-track" id="track"></div>
+  </div>
+</div>
+
+<!-- STAGE 3: GREETING -->
+<div class="stage" id="stage-greet">
+  <div id="greet-wrap">
+    <div class="g-title">生日快乐</div>
+    <!-- ===== 替换祝福文字 ===== -->
+    <div class="g-line" data-d="0">愿你在新的一岁里，所求皆所愿</div>
+    <div class="g-line" data-d="400">所行皆坦途，所爱皆可得</div>
+    <div class="g-line" data-d="800">前路浩荡，万事可期</div>
+    <!-- ===== 结束 ===== -->
+    <div class="g-div"></div>
+    <div class="g-sign">— 叶 文 哲</div>
+  </div>
+  <div id="star"></div>
+  <button id="back-to-cake" onclick="backToCake()">回到蛋糕</button>
+</div>
+
+<!-- THREE.JS -->
+<script type="importmap">
+{"imports":{
+  "three":"./three/three.module.js",
+  "three/addons/":"./three/"
+}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+/* ===== CONFIG ===== */
+const BGM_LIST = ['./bgm1.mp3','./bgm2.mp3','./bgm3.mp3','./bgm4.mp3','./bgm5.mp3'];
+const P_COUNT  = 7;
+const P_SPEED  = 180;   // px/s — 胶片走带速度
+const P_DURATION = 12000; // 相册总展示时长(ms)，播完一轮后自动切祝福
+
+/* ===== STATE ===== */
+let stage = 'cake';
+let muted = false;
+
+/* ===== AUDIO — 播放列表依次播放 ===== */
+let audioIdx = 0;
+const audio = new Audio();
+audio.volume = 0.5;
+audio.preload = 'auto';
+
+function playTrack(idx){
+  if(idx >= BGM_LIST.length) idx = 0; // 循环回第一首
+  audioIdx = idx;
+  audio.src = BGM_LIST[idx];
+  audio.load();
+  audio.play().catch(()=>{});
+}
+// 当前曲目播完，自动播下一首
+audio.addEventListener('ended', ()=>{ playTrack(audioIdx + 1); });
+
+// 预加载所有音频
+BGM_LIST.forEach(url=>{ const a=new Audio(); a.preload='auto'; a.src=url; });
+
+// 页面加载立即尝试播第一首
+playTrack(0);
+
+// 浏览器拦截自动播放时，等任意首次交互就播
+let _audioResumed = false;
+function _tryResume(){
+  if(_audioResumed) return;
+  _audioResumed = true;
+  if(audio.paused) playTrack(audioIdx);
+  // 清理所有监听
+  ['click','touchstart','pointerdown','keydown','wheel','scroll'].forEach(e =>
+    document.removeEventListener(e, _tryResume));
+}
+['click','touchstart','pointerdown','keydown','wheel','scroll'].forEach(e =>
+  document.addEventListener(e, _tryResume, {passive:true}));
+
+document.getElementById('audio-btn').addEventListener('click', ()=>{
+  muted = !muted; audio.muted = muted;
+  document.getElementById('a-icon').textContent = muted ? '✖' : '♫';
+});
+
+/* ===== BG PARTICLES ===== */
+(()=>{const c=document.getElementById('bg-p');
+  const cols=['rgba(255,200,170,.25)','rgba(232,180,150,.2)','rgba(210,160,120,.18)','rgba(255,214,138,.22)'];
+  for(let i=0;i<30;i++){const d=document.createElement('div');d.className='bp';
+    const s=3+Math.random()*5;Object.assign(d.style,{width:s+'px',height:s+'px',
+    left:Math.random()*100+'vw',top:Math.random()*100+'vh',
+    background:cols[~~(Math.random()*cols.length)],
+    animation:`float ${18+Math.random()*22}s linear ${Math.random()*10}s infinite`});
+    c.appendChild(d)}
+  const st=document.createElement('style');
+  st.textContent='@keyframes float{0%{transform:translateY(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-105vh);opacity:0}}';
+  document.head.appendChild(st);
+})();
+
+/* ===== FALLING PETALS ===== */
+(()=>{
+  const cont=document.createElement('div');cont.id='petals';
+  Object.assign(cont.style,{position:'fixed',inset:'0',pointerEvents:'none',zIndex:'2',overflow:'hidden'});
+  document.body.appendChild(cont);
+
+  const shapes=[
+    'polygon(50% 0%,65% 25%,100% 35%,70% 55%,75% 100%,50% 75%,25% 100%,30% 55%,0% 35%,35% 25%)', /* 花瓣形 */
+    'polygon(50% 0%,80% 20%,100% 50%,80% 80%,50% 100%,20% 80%,0% 50%,20% 20%)',               /* 菱花形 */
+    'ellipse(42% 50% at 50% 50%)'                                                              /* 椭圆小叶 */
+  ];
+  const colors=['#E8B8A0','#D4A088','#C8907A','#E0C0A8','#D8A890','#C89878','#E8C8B0'];
+
+  function spawn(){
+    if(stage!=='cake') return; /* 只在蛋糕页面飘 */
+    const el=document.createElement('div');el.className='petal';
+    const s=8+Math.random()*12;
+    const shape=shapes[~~(Math.random()*shapes.length)];
+    const col=colors[~~(Math.random()*colors.length)];
+    const dur=6+Math.random()*6;
+    const drift=(Math.random()-.5)*120+'px';
+    const spin=(180+Math.random()*360)*(Math.random()>.5?1:-1)+'deg';
+    el.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s}px;
+      background:${col};clip-path:${shape};
+      --drift:${drift};--spin:${spin};
+      animation:petalFall ${dur}s linear forwards`;
+    cont.appendChild(el);
+    setTimeout(()=>el.remove(), dur*1000+200);
+  }
+
+  /* 每 150~300ms 落一片，密度约为之前 3 倍 */
+  let pid=null;
+  function startPetals(){
+    if(pid) return;
+    pid=setInterval(()=>{
+      if(stage!=='cake'){clearInterval(pid);pid=null;return}
+      spawn();
+    }, 150+Math.random()*150);
+  }
+  startPetals();
+  window._startPetals = startPetals; // 暴露给 backToCake 用
+})();
+
+
+/* ===== CAKE STAGE DECORATIONS ===== */
+(()=>{
+  const deco=document.getElementById('cake-deco');
+  const bokehCols=['rgba(245,180,140,.15)','rgba(255,200,170,.13)','rgba(232,180,150,.12)','rgba(255,214,138,.14)','rgba(210,160,120,.10)'];
+  // 12 颗 bokeh 光斑（大、模糊、缓慢飘浮）
+  for(let i=0;i<12;i++){
+    const d=document.createElement('div');d.className='bokeh';
+    const s=60+Math.random()*120;
+    const col=bokehCols[~~(Math.random()*bokehCols.length)];
+    Object.assign(d.style,{
+      width:s+'px',height:s+'px',
+      left:Math.random()*100+'%',top:Math.random()*100+'%',
+      animationDelay:(Math.random()*3)+'s'
+    });
+    const inner=document.createElement('div');inner.className='bokeh-inner';
+    inner.style.background=col;
+    d.appendChild(inner);deco.appendChild(d);
+  }
+  // 18 颗 twinkling 星点（小、闪烁）
+  const twkCols=['rgba(232,180,150,.7)','rgba(210,160,120,.6)','rgba(255,200,170,.65)'];
+  for(let i=0;i<18;i++){
+    const d=document.createElement('div');d.className='twk';
+    const s=2+Math.random()*3;
+    Object.assign(d.style,{
+      width:s+'px',height:s+'px',
+      left:Math.random()*100+'%',top:Math.random()*100+'%',
+      background:twkCols[~~(Math.random()*twkCols.length)],
+      animationDuration:(2+Math.random()*3)+'s',
+      animationDelay:(Math.random()*4)+'s'
+    });
+    deco.appendChild(d);
+  }
+})();
+
+/* ===== THREE.JS ===== */
+const cvs = document.getElementById('cake-canvas');
+const W = ()=>window.innerWidth, H = ()=>window.innerHeight;
+
+const renderer = new THREE.WebGLRenderer({canvas: cvs, antialias:true, alpha:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(W(),H());
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.4;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(40, W()/H(), 0.1, 100);
+camera.position.set(0, 2.5, 7);
+camera.lookAt(1.0, 0.8, 0);
+
+const ctrl = new OrbitControls(camera, cvs);
+ctrl.enableDamping = true; ctrl.dampingFactor = 0.06;
+ctrl.enableZoom = false; ctrl.enablePan = false;
+ctrl.minPolarAngle = Math.PI/6; ctrl.maxPolarAngle = Math.PI/2.2;
+ctrl.target.set(1.0, 0.8, 0);
+
+/* ===== LIGHTS ===== */
+scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+const dl = new THREE.DirectionalLight(0xffffff, 1.2);
+dl.position.set(-4,8,5); scene.add(dl);
+const fl = new THREE.DirectionalLight(0xD0D8F0, 0.6);
+fl.position.set(3,4,-3); scene.add(fl);
+// Warm candle point light — sole warm color focus
+const cp = new THREE.PointLight(0xFFB84C, 2.0, 6, 1.6);
+cp.position.set(1.0,2.4,0); scene.add(cp);
+
+/* ===== CAKE GROUP ===== */
+const cakeGrp = new THREE.Group();
+cakeGrp.position.x = 1.0; /* 右移，视觉居中于便利贴墙右侧区域 */
+scene.add(cakeGrp);
+
+/* ===== LOAD GLTF CAKE MODEL ===== */
+const loader = new GLTFLoader();
+loader.load('./cake-model/cake.glb', (gltf)=>{
+  const model = gltf.scene;
+  // Auto-center and scale model to fit scene
+  const box = new THREE.Box3().setFromObject(model);
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+
+  // Scale so the cake is roughly 1.8 units tall（缩小避免遮挡名字标签）
+  const targetH = 1.8;
+  const scale = targetH / size.y;
+  model.scale.setScalar(scale);
+
+  // Recalculate after scaling
+  box.setFromObject(model);
+  box.getCenter(center);
+
+  // Center model on X/Z, place bottom at y=0
+  model.position.x = -center.x;
+  model.position.y = -box.min.y;
+  model.position.z = -center.z;
+
+  cakeGrp.add(model);
+
+  // Move candle point light to top of cake
+  cp.position.y = targetH + 0.4;
+
+  // Floor shadow
+  const sg = new THREE.CircleGeometry(0.9, 48);
+  const sm = new THREE.MeshBasicMaterial({color:0x000000, transparent:true, opacity:0.05, depthWrite:false});
+  const s = new THREE.Mesh(sg, sm);
+  s.rotation.x = -Math.PI/2; s.position.y = -0.02;
+  cakeGrp.add(s);
+}, (xhr)=>{ console.log('GLTF progress:', (xhr.loaded/xhr.total*100).toFixed(0)+'%'); }, (err)=>{
+  console.error('GLTF load failed:', err);
+  // Fallback: simple cylinder
+  const g = new THREE.CylinderGeometry(1.2,1.4,2.5,32);
+  const m = new THREE.MeshStandardMaterial({color:0xB8D4E8,roughness:.7});
+  const o = new THREE.Mesh(g,m); o.position.y=1.25; cakeGrp.add(o);
+});
+
+/* ===== SPARKLE PARTICLES ===== */
+const SN = 28;
+const sGeo = new THREE.BufferGeometry();
+const sPos = new Float32Array(SN*3);
+const sVel = [];
+for(let i=0;i<SN;i++){
+  const th=Math.random()*Math.PI*2, r=1.5+Math.random()*2.5;
+  sPos[i*3]=Math.cos(th)*r+1.0; sPos[i*3+1]=Math.random()*3.5+0.3; sPos[i*3+2]=Math.sin(th)*r;
+  sVel.push(0.003+Math.random()*0.006);
+}
+sGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
+const sMat = new THREE.PointsMaterial({color:0xE8C8B0,size:0.06,transparent:true,opacity:0.55,sizeAttenuation:true,depthWrite:false});
+scene.add(new THREE.Points(sGeo, sMat));
+
+/* ===== RENDER LOOP ===== */
+const clock = new THREE.Clock();
+let threeActive = true;
+let threeRAF = null; // 用 ID 追踪，方便取消和重启
+function threeLoop(){
+  if(!threeActive){ threeRAF=null; return; }
+  threeRAF = requestAnimationFrame(threeLoop);
+  const t = clock.getElapsedTime();
+  if(stage==='cake' || stage==='transition'){
+    ctrl.update();
+    if(stage==='cake') cakeGrp.rotation.y += 0.002;
+    cp.intensity = 2.0 + Math.sin(t*5.5)*0.35 + Math.sin(t*13.1)*0.15;
+    const p = sGeo.attributes.position.array;
+    for(let i=0;i<SN;i++){
+      p[i*3+1] += sVel[i];
+      if(p[i*3+1]>4.2){
+        p[i*3+1]=0.2;
+        const th=Math.random()*Math.PI*2,r=1.5+Math.random()*2.5;
+        p[i*3]=Math.cos(th)*r; p[i*3+2]=Math.sin(th)*r;
+      }
+    }
+    sGeo.attributes.position.needsUpdate = true;
+    renderer.render(scene, camera);
+  }
+}
+function startThree(){
+  if(threeRAF) cancelAnimationFrame(threeRAF); // 先取消旧的，防重复
+  threeActive = true;
+  threeLoop();
+}
+startThree();
+
+/* ===== RESIZE ===== */
+window.addEventListener('resize',()=>{
+  camera.aspect = W()/H(); camera.updateProjectionMatrix();
+  renderer.setSize(W(),H());
+});
+
+/* ===== CLICK CAKE ===== */
+let cakeClickLocked = false; // 防止重复点击
+let fadeTimer = null;        // fadeOutCake 的定时器 ID，backToCake 时必须清除
+let pushRAF = null;          // 相机推进动画的 rAF ID
+
+cvs.addEventListener('click', ()=>{
+  if(cakeClickLocked || stage!=='cake') return;
+  cakeClickLocked = true;
+  blowCandle();
+});
+
+function blowCandle(){
+  stage = 'transition';
+  ctrl.enabled = false; // 禁用 OrbitControls，避免干扰相机动画
+
+  // Camera push in
+  const s={x:camera.position.x,y:camera.position.y,z:camera.position.z};
+  const e={x:0,y:2.0,z:3.5};
+  const t0 = performance.now();
+  (function push(now){
+    const p = Math.min((now-t0)/800,1);
+    const ease = 1-Math.pow(1-p,3);
+    camera.position.x = s.x+(e.x-s.x)*ease;
+    camera.position.y = s.y+(e.y-s.y)*ease;
+    camera.position.z = s.z+(e.z-s.z)*ease;
+    camera.lookAt(0,1.5,0);
+    if(p<1) pushRAF = requestAnimationFrame(push);
+    else fadeOutCake();
+  })(t0);
+
+  // Fade candle light
+  const ft0 = performance.now();
+  (function fc(now){
+    const p=Math.min((now-ft0)/1000,1);
+    cp.intensity=2*(1-p); sMat.opacity=0.55*(1-p);
+    if(p<1) requestAnimationFrame(fc);
+  })(ft0);
+}
+
+function fadeOutCake(){
+  document.getElementById('stage-cake').classList.remove('active');
+  fadeTimer = setTimeout(()=>{
+    stage='carousel';
+    // 停掉 WebGL
+    threeActive = false;
+    if(threeRAF){ cancelAnimationFrame(threeRAF); threeRAF=null; }
+    document.getElementById('stage-cake').style.display = 'none';
+    const carStage = document.getElementById('stage-car');
+    carStage.style.display = '';
+    carStage.classList.add('active');
+    buildCarousel();
+  }, 800);
+}
+
+/* ===== CAROUSEL ===== */
+let rendered = false; // 防止 render 被调两次
+let scrollRAF = null;  // requestAnimationFrame ID，用于取消滚动动画
+
+function buildCarousel(){
+  const track = document.getElementById('track');
+  // 清理旧事件（防止二次进入时堆积）
+  track.onmouseenter = null;
+  track.onmouseleave = null;
+  track.style.transform = '';
+  track.innerHTML='';
+  const photoFiles=['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','img1.jpg','img2.jpg','img8.jpg'];
+  const imgs=[]; let loaded=0;
+  for(let i=0;i<photoFiles.length;i++){
+    const img=new Image();
+    img.src=`./photos/${photoFiles[i]}`;
+    img.onload=()=>{imgs[i]=img;if(++loaded>=photoFiles.length)render(imgs)};
+    img.onerror=()=>{imgs[i]=null;if(++loaded>=photoFiles.length)render(imgs)};
+  }
+  // 兜底：2 秒后如果还没全加载完，用已有的先渲染
+  setTimeout(()=>{if(!rendered)render(imgs)},2000);
+}
+
+const ROT=[-4.2,2.8,-1.5,3.7,-2.9,1.8,-3.1,2.3];
+const YO=[0,8,-6,12,-10,5,-8,6];
+const CAPTIONS=[
+  '银色耳机超近自拍，阳光打脸上',
+  '干饭前先刷手机，这才是真实状态',
+  '有帽子，下雨也丝毫不慌',
+  '夜晚操场飞盘局',
+  '校长来宿舍慰问，全员竖大拇指',
+  '书桌前埋头苦干的侧影，这就是你最帅的样子',
+  '上铺是你的专属宝座',
+  '宿舍楼前专注刷手机，仿佛在回什么重要消息'
+];
+
+function makePole(imgEl,idx){
+  const d=document.createElement('div'); d.className='polaroid';
+  d.style.transform=`rotate(${ROT[idx%ROT.length]}deg) translateY(${YO[idx%YO.length]}px)`;
+  if(imgEl){
+    const c=imgEl.cloneNode();
+    c.style.cssText='width:212px;height:212px;object-fit:cover;border-radius:2px;display:block';
+    d.appendChild(c);
+  }else{
+    const p=document.createElement('div');p.className='ph';p.textContent='Photo '+(idx+1);d.appendChild(p);
+  }
+  if(CAPTIONS[idx]){
+    const cap=document.createElement('div');cap.className='cap';cap.textContent=CAPTIONS[idx];d.appendChild(cap);
+  }
+  const lb=document.createElement('div');lb.className='lb';lb.textContent='致卢翌晨';d.appendChild(lb);
+  return d;
+}
+
+function render(photos){
+  if(rendered) return;
+  rendered = true;
+  const track=document.getElementById('track');
+  track.innerHTML='';
+
+  const valid = photos.filter(Boolean);
+  if(!valid.length) return;
+
+  // 把照片做两份拼在 track 里实现无缝循环
+  const set1=[], set2=[];
+  for(let i=0;i<valid.length;i++){
+    set1.push(makePole(valid[i],i));
+    set2.push(makePole(valid[i],i));
+  }
+  set1.forEach(el=>track.appendChild(el));
+  set2.forEach(el=>track.appendChild(el));
+
+  // 等浏览器 layout 完成后再算宽度、启动滚动
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>{
+      if(stage!=='carousel') return; // 用户已离开，不启动滚动
+      const halfW = track.scrollWidth / 2;
+      let off = 0, lastT = performance.now(), speedMul = 1.0;
+
+      track.onmouseenter = ()=>{ speedMul=0.3 };
+      track.onmouseleave = ()=>{ speedMul=1.0 };
+
+      (function scroll(now){
+        if(stage!=='carousel') { scrollRAF=null; return; }
+        const dt = (now - lastT) / 1000;
+        lastT = now;
+        off += P_SPEED * speedMul * dt;
+        if(halfW > 0 && off >= halfW) off -= halfW; // 无缝回绕
+        track.style.transform = `translate3d(${-off}px,0,0)`;
+        scrollRAF = requestAnimationFrame(scroll);
+      })(lastT);
+    });
+  });
+
+  window._carouselTimer = setTimeout(()=>{
+    if(stage!=='carousel') return;
+    stage='transition2';
+    document.getElementById('stage-car').classList.remove('active');
+    window._greetTimer = setTimeout(()=>{stage='greeting';showGreeting()},800);
+  }, P_DURATION);
+}
+
+/* ===== GREETING ===== */
+function showGreeting(){
+  const s=document.getElementById('stage-greet');
+  s.style.display='';
+  s.classList.add('active');
+  s.querySelectorAll('.g-line').forEach((l,i)=>{
+    setTimeout(()=>l.classList.add('show'), 600+parseInt(l.dataset.d||'0'));
+  });
+  setTimeout(()=>s.querySelector('.g-sign').classList.add('show'), 600+400*3+300);
+  setTimeout(()=>{document.getElementById('star').style.animation='shoot 1.5s ease-out forwards'}, 600+400*3+2200);
+}
+
+/* ===== BACK TO CAKE ===== */
+window.backToCake = function(){
+  const greet = document.getElementById('stage-greet');
+  const cake  = document.getElementById('stage-cake');
+  const car   = document.getElementById('stage-car');
+  // 清除所有残留定时器和动画
+  clearTimeout(fadeTimer); fadeTimer = null;
+  clearTimeout(window._carouselTimer);
+  clearTimeout(window._greetTimer);
+  if(pushRAF){ cancelAnimationFrame(pushRAF); pushRAF=null; }
+  if(scrollRAF){ cancelAnimationFrame(scrollRAF); scrollRAF=null; }
+  // 隐藏祝福页
+  greet.classList.remove('active');
+  greet.querySelectorAll('.g-line').forEach(l=>l.classList.remove('show'));
+  greet.querySelector('.g-sign').classList.remove('show');
+  // 隐藏相册页
+  car.classList.remove('active');
+  // 重置状态
+  rendered = false;
+  cakeClickLocked = false;
+  // 重置流星动画
+  document.getElementById('star').style.animation = 'none';
+  setTimeout(()=>{
+    greet.style.display='none';
+    car.style.display='none';
+    // 恢复蛋糕页
+    cake.style.display='';
+    cake.classList.add('active');
+    // 恢复相机位置
+    camera.position.set(0, 2.5, 7);
+    camera.lookAt(1.0, 0.8, 0);
+    ctrl.target.set(1.0, 0.8, 0);
+    ctrl.enabled = true; // 重新启用 OrbitControls
+    ctrl.update();
+    // 恢复渲染器尺寸
+    camera.aspect = W()/H();
+    camera.updateProjectionMatrix();
+    renderer.setSize(W(),H());
+    // 恢复蜡烛灯光和阴影
+    cp.intensity = 2.0;
+    sMat.opacity = 0.55;
+    threeActive = true;
+    stage = 'cake';
+    startThree();
+    // 重启花瓣飘落
+    if(window._startPetals) window._startPetals();
+  }, 600);
+};
+</script>
+</body>
+</html>

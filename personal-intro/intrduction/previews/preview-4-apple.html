@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>风格 4：深灰银白 Apple 风</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #1A1A1C;
+  --bg-card: #222226;
+  --border: #2D2D30;
+  --border-hover: #404048;
+  --text: #FAFAFA;
+  --text-mute: #A0A0A8;
+  --text-soft: #6A6A72;
+  --accent: #FF7849;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-feature-settings: "ss01";
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1240px; margin: 0 auto; padding: 0 40px; position: relative; z-index: 2; }
+
+nav {
+  padding: 32px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav .logo {
+  font-family: 'Inter', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: var(--text);
+}
+nav .menu { display: flex; gap: 40px; font-size: 14px; }
+nav .menu a {
+  color: var(--text-mute);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 400;
+}
+nav .menu a:hover { color: var(--text); }
+
+.hero { padding: 160px 0 120px; }
+.hero .label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-soft);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+  font-weight: 500;
+}
+.hero h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 112px;
+  font-weight: 200;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  margin-bottom: 36px;
+}
+.hero h1 .strong { font-weight: 600; }
+.hero .tagline {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 26px;
+  font-weight: 200;
+  color: var(--text-mute);
+  max-width: 720px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+.hero .meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text-soft);
+  letter-spacing: 0.02em;
+}
+
+.cards-section { padding: 80px 0 140px; }
+.cards-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-soft);
+  margin-bottom: 40px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-weight: 500;
+}
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 40px 32px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  min-height: 320px;
+}
+.card:hover {
+  background: #2A2A2E;
+  border-color: var(--border-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+}
+.card:hover .arrow { transform: translateX(4px); }
+
+.card .num {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-soft);
+  margin-bottom: 32px;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+.card .title-en {
+  font-family: 'Inter', sans-serif;
+  font-size: 32px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  margin-bottom: 4px;
+  line-height: 1.1;
+}
+.card .title-zh {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  color: var(--text-mute);
+  margin-bottom: 32px;
+  font-weight: 300;
+}
+.card .desc {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  color: var(--text-mute);
+  line-height: 1.7;
+  flex: 1;
+  font-weight: 300;
+}
+.card .arrow {
+  margin-top: 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--accent);
+  transition: transform 0.3s;
+  font-weight: 500;
+}
+
+footer {
+  padding: 48px 0;
+  border-top: 1px solid var(--border);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--text-soft);
+  display: flex;
+  justify-content: space-between;
+  font-weight: 400;
+}
+
+.style-badge {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: var(--text);
+  color: var(--bg);
+  padding: 6px 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  border-radius: 100px;
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 60px; }
+  .hero .tagline { font-size: 18px; }
+  .cards { grid-template-columns: 1fr; }
+  nav .menu { gap: 24px; font-size: 13px; }
+  .container { padding: 0 24px; }
+}
+</style>
+</head>
+<body>
+<div class="style-badge">STYLE 04</div>
+
+<div class="container">
+  <nav>
+    <div class="logo">wenzhe</div>
+    <div class="menu">
+      <a href="#">AI 工具箱</a>
+      <a href="#">课程拆解</a>
+      <a href="#">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Hello, I'm</div>
+    <h1>文哲<span class="strong">.</span></h1>
+    <p class="tagline">用 AI 做出能用的小产品，分享给身边的朋友。</p>
+    <p class="meta">浙江工商大学 · 计算机 · AI 应用开发</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards-label">Explore</div>
+    <div class="cards">
+      <a href="#" class="card">
+        <div class="num">01 — Toolbox</div>
+        <div class="title-en">AI Toolbox</div>
+        <div class="title-zh">AI 工具箱</div>
+        <div class="desc">2026 最值得用的 AI 模型与工具，30 张精选卡片，海外 + 国内分类筛选，每 3 天 AI 自动刷新。</div>
+        <div class="arrow">View →</div>
+      </a>
+      <a href="#" class="card">
+        <div class="num">02 — Course</div>
+        <div class="title-en">Course</div>
+        <div class="title-zh">课程拆解</div>
+        <div class="desc">用「道法术器」框架解构核心方法论。第一篇：万维钢 SDT 自我决定理论与内驱保护。</div>
+        <div class="arrow">View →</div>
+      </a>
+      <a href="#" class="card">
+        <div class="num">03 — Works</div>
+        <div class="title-en">Works</div>
+        <div class="title-zh">作品集</div>
+        <div class="desc">6 个 AI 产品作品。炒股日报 / 问卷网页 / 知识图谱 / AI 工具箱本身 / Gemini 教练 / AI 日报。</div>
+        <div class="arrow">View →</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built with Claude Code</span>
+    <span>2026</span>
+  </footer>
+</div>
+</body>
+</html>

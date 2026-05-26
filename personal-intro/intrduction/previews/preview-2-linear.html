@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>风格 2：Linear / Vercel 紫蓝产品风</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0A0A0F;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(124, 92, 255, 0.4);
+  --text: #EDEDED;
+  --text-mute: #8B8B95;
+  --text-soft: #5A5A65;
+  --accent: #7C5CFF;
+  --accent-glow: rgba(124, 92, 255, 0.15);
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-feature-settings: "ss01", "cv11";
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* gradient orbs */
+body::before {
+  content: '';
+  position: fixed;
+  top: -300px;
+  left: -200px;
+  width: 800px;
+  height: 800px;
+  background: radial-gradient(circle, rgba(124, 92, 255, 0.18) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  bottom: -400px;
+  right: -300px;
+  width: 900px;
+  height: 900px;
+  background: radial-gradient(circle, rgba(80, 130, 255, 0.12) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 2; }
+
+nav {
+  padding: 28px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+nav .logo {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+nav .logo .glow {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 16px var(--accent);
+}
+nav .menu { display: flex; gap: 32px; font-size: 14px; }
+nav .menu a {
+  color: var(--text-mute);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 500;
+}
+nav .menu a:hover { color: var(--text); }
+
+.hero { padding: 120px 0 80px; text-align: left; }
+.hero .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-glow);
+  border: 1px solid rgba(124, 92, 255, 0.25);
+  padding: 6px 14px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+}
+.hero .label::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px var(--accent);
+}
+.hero h1 {
+  font-family: 'Inter', sans-serif;
+  font-size: 88px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  margin-bottom: 28px;
+  background: linear-gradient(135deg, #fff 0%, #B8B8C5 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero .tagline {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--text-mute);
+  max-width: 640px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.hero .meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-soft);
+}
+
+.cards-section { padding: 60px 0 120px; }
+.cards-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-bottom: 28px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px 28px;
+  text-decoration: none;
+  color: var(--text);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 0%, var(--accent-glow) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.card:hover::before { opacity: 1; }
+.card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px -20px var(--accent-glow);
+}
+.card > * { position: relative; z-index: 1; }
+.card .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  margin-bottom: 24px;
+  font-weight: 500;
+}
+.card .title-en {
+  font-family: 'Inter', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.card .title-zh {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  color: var(--text-mute);
+  margin-bottom: 24px;
+}
+.card .desc {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 13px;
+  color: var(--text-mute);
+  line-height: 1.7;
+  flex: 1;
+}
+.card .arrow {
+  margin-top: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--accent);
+  transition: transform 0.3s;
+}
+.card:hover .arrow { transform: translateX(6px); }
+
+footer {
+  padding: 32px 0;
+  border-top: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-soft);
+  display: flex;
+  justify-content: space-between;
+}
+
+.style-badge {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  border-radius: 6px;
+  box-shadow: 0 8px 30px var(--accent-glow);
+  z-index: 100;
+}
+
+@media (max-width: 768px) {
+  .hero h1 { font-size: 52px; }
+  .hero .tagline { font-size: 17px; }
+  .cards { grid-template-columns: 1fr; }
+  nav .menu { gap: 18px; font-size: 13px; }
+}
+</style>
+</head>
+<body>
+<div class="style-badge">STYLE 02 / LINEAR</div>
+
+<div class="container">
+  <nav>
+    <div class="logo"><span class="glow"></span> wenzhe</div>
+    <div class="menu">
+      <a href="#">AI 工具箱</a>
+      <a href="#">课程拆解</a>
+      <a href="#">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">HELLO, I'M</div>
+    <h1>文哲</h1>
+    <p class="tagline">用 AI 做出能用的小产品，分享给身边的朋友。</p>
+    <p class="meta">浙江工商大学 · 计算机 · AI 应用开发</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards-label">// EXPLORE</div>
+    <div class="cards">
+      <a href="#" class="card">
+        <div class="num">01 — TOOLBOX</div>
+        <div class="title-en">AI Toolbox</div>
+        <div class="title-zh">AI 工具箱</div>
+        <div class="desc">2026 最值得用的 AI 模型与工具，30 张精选卡片，海外 + 国内分类筛选，每 3 天 AI 自动刷新。</div>
+        <div class="arrow">view →</div>
+      </a>
+      <a href="#" class="card">
+        <div class="num">02 — COURSE</div>
+        <div class="title-en">Course</div>
+        <div class="title-zh">课程拆解</div>
+        <div class="desc">用「道法术器」框架解构核心方法论。第一篇：万维钢 SDT 自我决定理论与内驱保护。</div>
+        <div class="arrow">view →</div>
+      </a>
+      <a href="#" class="card">
+        <div class="num">03 — WORKS</div>
+        <div class="title-en">Works</div>
+        <div class="title-zh">作品集</div>
+        <div class="desc">6 个 AI 产品作品。炒股日报 / 问卷网页 / 知识图谱 / AI 工具箱本身 / Gemini 教练 / AI 日报。</div>
+        <div class="arrow">view →</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>BUILT WITH CLAUDE CODE</span>
+    <span>2026</span>
+  </footer>
+</div>
+</body>
+</html>

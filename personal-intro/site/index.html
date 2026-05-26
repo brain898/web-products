@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>叶文哲 — AI 应用开发者</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0820;
+  --card:rgba(20,16,48,0.55);
+  --card-hover:rgba(30,22,68,0.72);
+  --border:rgba(168,150,220,0.16);
+  --border-hover:rgba(255,144,160,0.45);
+  --text:var(--kimi-text,#f4eef9);
+  --text-mute:rgba(220,210,240,0.65);
+  --text-soft:rgba(180,170,210,0.5);
+  --accent:var(--kimi-accent,#ffb098);
+  --thread:var(--kimi-thread,#ff8a7a);
+}
+html,body{background:var(--bg)}
+body{color:var(--text);font-family:'Inter','Noto Sans SC',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{max-width:1240px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+nav{padding:32px 0;display:flex;justify-content:space-between;align-items:center}
+nav .logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;font-weight:400;letter-spacing:0.02em;color:var(--text);text-decoration:none;transition:color 0.3s}
+nav .logo:hover{color:var(--accent)}
+nav .menu{display:flex;gap:36px;font-size:13px}
+nav .menu a{color:var(--text-mute);text-decoration:none;transition:color 0.3s;font-weight:300;letter-spacing:0.02em;position:relative;padding-bottom:2px}
+nav .menu a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)}
+nav .menu a:hover{color:var(--text)}
+nav .menu a:hover::after{transform:scaleX(1);transform-origin:left}
+
+.hero{padding:140px 0 100px;position:relative}
+.hero .label{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:28px;font-weight:400;opacity:0;animation:fadeUp 0.8s ease forwards 0.1s}
+.hero .label::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px;opacity:0.7}
+.hero .jp-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--accent);letter-spacing:0.05em;margin-bottom:8px;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;font-weight:300}
+.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(56px,9vw,128px);font-weight:300;letter-spacing:0.02em;line-height:1;margin-bottom:28px;opacity:0;animation:fadeUp 0.9s ease forwards 0.28s;position:relative}
+.hero h1 .dot{display:inline-block;width:14px;height:14px;background:var(--accent);border-radius:50%;margin-left:8px;vertical-align:0.4em;box-shadow:0 0 24px var(--accent),0 0 48px var(--accent)}
+.hero h1 .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:0.42em;color:var(--text-mute);display:block;margin-top:16px;letter-spacing:0.05em}
+.hero .tagline{font-family:'Noto Serif SC',serif;font-size:clamp(20px,2.4vw,28px);font-weight:300;color:var(--text);max-width:680px;line-height:1.55;margin-bottom:32px;letter-spacing:0.02em;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s}
+.hero .bio{font-family:'Noto Sans SC',sans-serif;font-size:15px;color:var(--text-mute);max-width:640px;line-height:1.95;margin-bottom:14px;font-weight:300;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s}
+.hero .meta{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-soft);letter-spacing:0.08em;margin-top:24px;opacity:0;animation:fadeUp 0.8s ease forwards 0.6s}
+
+.cards-section{padding:40px 0 140px;position:relative}
+.cards-label{display:flex;align-items:center;gap:16px;margin-bottom:48px;opacity:0;animation:fadeUp 0.8s ease forwards 0.7s}
+.cards-label .ja{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0.1em}
+.cards-label .en{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.3em}
+.cards-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.card{background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:20px;padding:36px 28px 30px;text-decoration:none;color:var(--text);transition:all 0.5s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;min-height:300px;opacity:0;animation:fadeUp 0.8s ease forwards;position:relative;overflow:hidden}
+.card::before{content:"";position:absolute;inset:0;border-radius:20px;padding:1px;background:linear-gradient(135deg,transparent 30%,var(--thread) 50%,transparent 70%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity 0.5s}
+.card::after{content:"";position:absolute;left:50%;top:50%;width:200%;height:200%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(255,140,140,0.18),transparent 40%);opacity:0;transition:opacity 0.6s;pointer-events:none}
+.card:nth-child(1){animation-delay:0.8s}.card:nth-child(2){animation-delay:0.9s}.card:nth-child(3){animation-delay:1.0s}
+.card:hover{background:var(--card-hover);transform:translateY(-4px);box-shadow:0 30px 60px -20px rgba(0,0,0,0.6),0 0 40px -10px var(--thread)}
+.card:hover::before{opacity:0.6}
+.card:hover::after{opacity:1}
+.card:hover .arrow{transform:translateX(6px);color:var(--accent)}
+.card .num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);margin-bottom:28px;font-weight:400;letter-spacing:0.08em}
+.card .title-en{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:400;font-style:italic;letter-spacing:0.01em;margin-bottom:6px;line-height:1.1;color:var(--text)}
+.card .title-zh{font-family:'Noto Serif SC',serif;font-size:14px;color:var(--text-mute);margin-bottom:24px;font-weight:300;letter-spacing:0.05em}
+.card .desc{font-family:'Noto Sans SC',sans-serif;font-size:13px;color:var(--text-mute);line-height:1.85;flex:1;font-weight:300}
+.card .arrow{margin-top:24px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-mute);transition:all 0.4s;font-weight:400;letter-spacing:0.05em}
+
+footer{padding:40px 0 56px;border-top:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--text-soft);display:flex;justify-content:space-between;letter-spacing:0.05em}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .hero{padding:80px 0 60px}
+  .hero h1{font-size:64px}
+  .cards{grid-template-columns:1fr}
+  nav .menu{gap:20px;font-size:12px}
+  .container{padding:0 24px}
+}
+</style>
+</head>
+<body>
+<script>(function(){var s=localStorage.getItem('kimiPalette');if(s)window.__KIMI_PALETTE__=s;})();</script>
+<script src="kimi-no-na-wa.js"></script>
+<div class="container">
+  <nav>
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html">AI 工具箱</a>
+      <a href="course.html">课程拆解</a>
+      <a href="works.html">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Hello, I&rsquo;m</div>
+    <h1>叶文哲<span class="dot"></span><span class="en">Wenzhe Ye &middot; AI Builder</span></h1>
+    <p class="tagline">用 AI 做出能用的小产品，<br>分享给身边的朋友。</p>
+    <p class="bio">浙江工商大学计算机在读。</p>
+    <p class="bio">不追前沿论文，不卷算法竞赛，专注做一件事——用 AI 把身边的需求变成能跑起来的工具。AI 日报、问卷网页、AI 知识库、学习教练……都是从朋友的一句话开始，用几天时间做出来、上线、让人直接用。</p>
+    <p class="bio">我相信好产品不是想出来的，是做出来的。</p>
+    <p class="meta">浙江工商大学 &middot; 计算机 &middot; AI 应用开发</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards-label">
+      <span class="ja">探索</span>
+      <span class="en">Explore</span>
+      <span class="line"></span>
+    </div>
+    <div class="cards">
+      <a href="toolbox.html" class="card">
+        <div class="num">01 — Toolbox</div>
+        <div class="title-en">AI Toolbox</div>
+        <div class="title-zh">AI 工具箱</div>
+        <div class="desc">2026 最值得用的 AI 模型与工具，37 张精选卡片，海外 + 国内分类筛选，每 3 天 AI 自动刷新。</div>
+        <div class="arrow">→ enter</div>
+      </a>
+      <a href="course.html" class="card">
+        <div class="num">02 — Insights</div>
+        <div class="title-en">Course Insights</div>
+        <div class="title-zh">课程拆解</div>
+        <div class="desc">用「道法术器」框架解构核心方法论。第一篇：自我决定理论（SDT）与内驱保护。</div>
+        <div class="arrow">→ read</div>
+      </a>
+      <a href="works.html" class="card">
+        <div class="num">03 — Works</div>
+        <div class="title-en">Projects</div>
+        <div class="title-zh">作品集</div>
+        <div class="desc">6 个 AI 产品：行情日报 / 问卷网页 / 知识图谱 / AI 工具箱 / 学习教练 / AI 日报。</div>
+        <div class="arrow">→ view</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built with Claude Code</span>
+    <span>Wenzhe Ye · 2026</span>
+  </footer>
+</div>
+
+<script type="text/babel" src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script>
+// Tweaks panel — palette switcher
+(function(){
+  var TWEAKS=/*EDITMODE-BEGIN*/{
+    "palette": "comet"
+  }/*EDITMODE-END*/;
+  // apply on load via shared bg script — set window before its DOMContentLoaded
+})();
+
+var panelOpen=false;
+function buildPanel(){
+  if(document.getElementById('kimi-tweaks'))return;
+  var p=document.createElement('div');p.id='kimi-tweaks';
+  p.style.cssText='position:fixed;right:20px;bottom:20px;z-index:1000;background:rgba(15,12,40,0.92);backdrop-filter:blur(20px);border:1px solid rgba(255,160,180,0.25);border-radius:16px;padding:20px 22px;font-family:Inter,sans-serif;font-size:12px;color:#f4eef9;min-width:240px;box-shadow:0 20px 60px rgba(0,0,0,0.5);display:none';
+  var current=window.__KIMI_PALETTE__||'twilight';
+  p.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><span style="font-family:\'Cormorant Garamond\',serif;font-style:italic;font-size:15px;color:#ffb098">Tweaks</span><button id="kimi-close" style="background:none;border:none;color:#888;cursor:pointer;font-size:18px;line-height:1">×</button></div>'
+    + '<div style="font-size:10px;letter-spacing:0.2em;color:rgba(220,210,240,0.5);text-transform:uppercase;margin-bottom:10px">Palette · 色调</div>'
+    + '<div style="display:flex;flex-direction:column;gap:8px">'
+    + opt('twilight','深夜紫蓝 Twilight','linear-gradient(135deg,#0a0820,#43286a,#a85d8c)',current)
+    + opt('comet','彗星冷蓝 Comet','linear-gradient(135deg,#050818,#2c4380,#aab8e8)',current)
+    + opt('shrine','黄昏暖橙 Shrine','linear-gradient(135deg,#3a1338,#a04a5a,#f0b878)',current)
+    + '</div>';
+  function opt(v,label,grad,cur){
+    var sel=v===cur;
+    return '<button data-pal="'+v+'" style="display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;border:1px solid '+(sel?'rgba(255,160,180,0.5)':'rgba(255,255,255,0.08)')+';background:'+(sel?'rgba(255,160,180,0.1)':'transparent')+';cursor:pointer;color:#f4eef9;font-family:inherit;font-size:12px;text-align:left;transition:all 0.2s"><span style="width:32px;height:20px;border-radius:5px;background:'+grad+';border:1px solid rgba(255,255,255,0.15);flex-shrink:0"></span><span>'+label+'</span></button>';
+  }
+  document.body.appendChild(p);
+  p.addEventListener('click',function(e){
+    var b=e.target.closest('[data-pal]');if(!b)return;
+    var v=b.getAttribute('data-pal');
+    try{window.parent.postMessage({type:'__edit_mode_set_keys',edits:{palette:v}},'*')}catch(_){}
+    localStorage.setItem('kimiPalette',v);
+    location.reload();
+  });
+  document.getElementById('kimi-close').onclick=function(){
+    p.style.display='none';panelOpen=false;
+    try{window.parent.postMessage({type:'__edit_mode_dismissed'},'*')}catch(_){}
+  };
+}
+window.addEventListener('message',function(e){
+  if(!e.data||!e.data.type)return;
+  if(e.data.type==='__activate_edit_mode'){buildPanel();document.getElementById('kimi-tweaks').style.display='block';panelOpen=true}
+  if(e.data.type==='__deactivate_edit_mode'){var el=document.getElementById('kimi-tweaks');if(el)el.style.display='none';panelOpen=false}
+});
+try{window.parent.postMessage({type:'__edit_mode_available'},'*')}catch(_){}
+// Apply saved palette on next load (palette read at bg script run)
+(function(){
+  var saved=localStorage.getItem('kimiPalette');
+  if(saved&&!window.__KIMI_PALETTE__){window.__KIMI_PALETTE__=saved}
+})();
+</script>
+</body>
+</html>

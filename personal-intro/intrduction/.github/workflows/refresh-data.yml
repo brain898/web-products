@@ -1,0 +1,53 @@
+name: Refresh AI Toolbox Data
+
+on:
+  schedule:
+    # 每 3 天 UTC 00:00 运行（北京时间 08:00）
+    - cron: '0 0 */3 * *'
+  workflow_dispatch:  # 支持手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run refresh script
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+          LLM_BASE_URL: ${{ secrets.LLM_BASE_URL }}
+          LLM_MODEL: ${{ secrets.LLM_MODEL }}
+          SEARCH_API_KEY: ${{ secrets.SEARCH_API_KEY }}
+          SEARCH_ENGINE: ${{ secrets.SEARCH_ENGINE }}
+        run: python refresh.py
+
+      - name: Sync data into HTML
+        run: python build.py
+
+      - name: Check for changes
+        id: diff
+        run: |
+          git diff --quiet && echo "changed=false" >> $GITHUB_OUTPUT || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "AI Toolbox Bot"
+          git config user.email "bot@ai-toolbox.local"
+          git add data.json toolbox.html
+          git commit -m "chore: refresh AI toolbox data $(date +%Y-%m-%d)"
+          git push

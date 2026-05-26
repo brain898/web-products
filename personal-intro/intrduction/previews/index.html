@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4 个深色风格预览对比</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #0A0A0A;
+  color: #E5E5E5;
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  min-height: 100vh;
+  padding: 60px 32px;
+}
+.wrap { max-width: 1200px; margin: 0 auto; }
+h1 {
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 12px;
+}
+.sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 60px;
+  letter-spacing: 0.05em;
+}
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+.card {
+  background: #141414;
+  border: 1px solid #1F1F1F;
+  border-radius: 12px;
+  padding: 32px;
+  text-decoration: none;
+  color: #E5E5E5;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
+}
+.card:hover {
+  border-color: #404040;
+  transform: translateY(-4px);
+}
+.tag {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: #888;
+  margin-bottom: 24px;
+}
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+}
+.desc {
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  color: #888;
+  line-height: 1.7;
+  margin-bottom: 20px;
+  flex: 1;
+}
+.swatch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.swatch span {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: 1px solid #2A2A2A;
+}
+.go {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #E85D26;
+}
+.card:hover .go { transform: translateX(4px); display: inline-block; transition: transform 0.3s; }
+
+.tip {
+  margin-top: 60px;
+  padding: 24px;
+  background: #141414;
+  border: 1px solid #1F1F1F;
+  border-radius: 12px;
+  font-family: 'Noto Sans SC', sans-serif;
+  font-size: 14px;
+  color: #888;
+  line-height: 1.8;
+}
+.tip strong { color: #E5E5E5; }
+.tip code {
+  background: #0A0A0A;
+  border: 1px solid #2A2A2A;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #E85D26;
+}
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  h1 { font-size: 32px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>4 个深色风格预览</h1>
+  <p class="sub">// 点击进入查看完整效果，对比后告诉我哪个最对味</p>
+
+  <div class="grid">
+    <a href="preview-1-openai.html" class="card">
+      <div class="tag">STYLE 01</div>
+      <div class="swatch">
+        <span style="background:#0A0A0A"></span>
+        <span style="background:#E85D26"></span>
+        <span style="background:#E5E5E5"></span>
+      </div>
+      <div class="title">OpenAI / Anthropic 风</div>
+      <div class="desc">纯黑底 + 沿用现有橙色单一强调。最克制，改造成本最低（沿用现有 logo / 数据 / 字体）。类比 OpenAI、Anthropic 官网那种高级克制感。</div>
+      <div class="go">VIEW →</div>
+    </a>
+
+    <a href="preview-2-linear.html" class="card">
+      <div class="tag">STYLE 02</div>
+      <div class="swatch">
+        <span style="background:#0A0A0F"></span>
+        <span style="background:#7C5CFF"></span>
+        <span style="background:#EDEDED"></span>
+      </div>
+      <div class="title">Linear / Vercel 紫蓝产品风</div>
+      <div class="desc">深紫黑底 + 紫蓝强调，玻璃拟态卡片 + 微发光 + 渐变色块。SaaS 产品工程师调，未来感更强但稍花。</div>
+      <div class="go">VIEW →</div>
+    </a>
+
+    <a href="preview-3-cyber.html" class="card">
+      <div class="tag">STYLE 03</div>
+      <div class="swatch">
+        <span style="background:#0A0E14"></span>
+        <span style="background:#00D4FF"></span>
+        <span style="background:#D4D4D4"></span>
+      </div>
+      <div class="title">深蓝赛博 / Raycast 风</div>
+      <div class="desc">深蓝黑底 + 青蓝强调，网格背景 + 等宽字体 + 终端味（命令行风的导航 / 代码片段感）。极客赛博感最强。</div>
+      <div class="go">VIEW →</div>
+    </a>
+
+    <a href="preview-4-apple.html" class="card">
+      <div class="tag">STYLE 04</div>
+      <div class="swatch">
+        <span style="background:#1A1A1C"></span>
+        <span style="background:#FAFAFA"></span>
+        <span style="background:#FF7849"></span>
+      </div>
+      <div class="title">深灰 + 银白 Apple 风</div>
+      <div class="desc">深灰底 + 银白主导 + 微量橙色点缀。最冷静最克制，超细字重 + 大量留白。平静质感而不是击中感。</div>
+      <div class="go">VIEW →</div>
+    </a>
+  </div>
+
+  <div class="tip">
+    <strong>怎么对比：</strong>用浏览器打开这个 <code>index.html</code>，4 个卡片点进去分别看，再回来选。<br>
+    每个 preview 都用了相同的内容（首页 hero + 3 张大卡片入口），只是配色 / 字体 / 质感不同——对比的就是「视觉对味度」。<br>
+    告诉我编号（01 / 02 / 03 / 04），我按那个风格出最终方案。
+  </div>
+</div>
+</body>
+</html>

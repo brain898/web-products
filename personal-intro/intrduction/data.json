@@ -1,0 +1,438 @@
+{
+  "lastUpdated": "2026-05-04",
+  "source": "数字生命卡兹克 2026-04-30",
+  "categories": [
+    {
+      "id": "knowledge",
+      "name": "知识与研究",
+      "scenarios": [
+        {
+          "scene": "AI 搜索引擎",
+          "products": [
+            {
+              "name": "Perplexity",
+              "tag": "海外",
+              "highlight": "AI 时代的搜索引擎，复杂调研首选",
+              "url": "https://www.perplexity.ai"
+            },
+            {
+              "name": "Genspark AI",
+              "tag": "海外",
+              "highlight": "Perplexity 替代品，对 IP 要求更低",
+              "url": "https://www.genspark.ai"
+            }
+          ]
+        },
+        {
+          "scene": "知识问答",
+          "products": [
+            {
+              "name": "GPT-5.5",
+              "tag": "海外",
+              "highlight": "幻觉极低，问答准确度业界领先",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "豆包",
+              "tag": "国内",
+              "highlight": "国内知识问答首选，免费好用",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "深度研究",
+          "products": [
+            {
+              "name": "ChatGPT DeepResearch",
+              "tag": "海外",
+              "highlight": "深度研究功能，长链推理能力最强",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "豆包",
+              "tag": "国内",
+              "highlight": "国内深度研究替代方案",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 资讯获取",
+          "products": [
+            {
+              "name": "AIHOT",
+              "tag": "国内",
+              "highlight": "AI 领域资讯聚合，信息密度高",
+              "url": "https://aihot.cn"
+            }
+          ]
+        },
+        {
+          "scene": "实时信息获取",
+          "products": [
+            {
+              "name": "Grok",
+              "tag": "海外",
+              "highlight": "X 平台实时搜索，获取最新动态",
+              "url": "https://x.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "name": "内容创作",
+      "scenarios": [
+        {
+          "scene": "内容创作与知识管理",
+          "products": [
+            {
+              "name": "Claude Opus 4.6",
+              "tag": "海外",
+              "highlight": "独一档的夯，别用 Opus 4.7，真的拉",
+              "url": "https://claude.ai"
+            },
+            {
+              "name": "DeepSeek V4 Pro",
+              "tag": "国内",
+              "highlight": "国内创作首选，性价比极高",
+              "url": "https://chat.deepseek.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 翻译",
+          "products": [
+            {
+              "name": "沉浸式翻译",
+              "tag": "国内",
+              "highlight": "支持多家 AI 引擎翻译，浏览器插件",
+              "url": "https://immersivetranslate.com/zh-Hans/"
+            }
+          ]
+        },
+        {
+          "scene": "知识库管理",
+          "products": [
+            {
+              "name": "NotebookLM",
+              "tag": "海外",
+              "highlight": "Google 出品，上传资料自动摘要、问答、生成播客",
+              "url": "https://notebooklm.google.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 数字人",
+          "products": [
+            {
+              "name": "HeyGen",
+              "tag": "海外",
+              "highlight": "AI 数字人视频生成，口播视频神器",
+              "url": "https://www.heygen.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "code",
+      "name": "代码开发",
+      "scenarios": [
+        {
+          "scene": "数据分析",
+          "products": [
+            {
+              "name": "Codex + GPT-5.5",
+              "tag": "海外",
+              "highlight": "数据分析执行效率顶级",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内数据分析最佳组合",
+              "url": "https://open.bigmodel.cn"
+            }
+          ]
+        },
+        {
+          "scene": "架构规划",
+          "products": [
+            {
+              "name": "Claude Code + Opus 4.7",
+              "tag": "海外",
+              "highlight": "架构规划能力最强，思维链清晰",
+              "url": "https://claude.ai"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内架构规划替代方案",
+              "url": "https://open.bigmodel.cn"
+            }
+          ]
+        },
+        {
+          "scene": "代码开发执行",
+          "products": [
+            {
+              "name": "Codex + GPT-5.5",
+              "tag": "海外",
+              "highlight": "执行能力顶级，配合 Codex 工作流爽",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "Claude Code + GLM-5.1",
+              "tag": "国内",
+              "highlight": "国内代码执行最佳组合",
+              "url": "https://open.bigmodel.cn"
+            }
+          ],
+          "note": "cc + Opus 4.7 做规划，Codex + GPT-5.5 做开发执行"
+        },
+        {
+          "scene": "AI 代码编辑器",
+          "products": [
+            {
+              "name": "Cursor",
+              "tag": "海外",
+              "highlight": "内置 Claude + GPT，AI 写代码效率极高",
+              "url": "https://cursor.com"
+            },
+            {
+              "name": "Lovable",
+              "tag": "海外",
+              "highlight": "描述需求直接生成可部署的 Web 应用",
+              "url": "https://lovable.dev"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "visual",
+      "name": "视觉创作",
+      "scenarios": [
+        {
+          "scene": "前端设计",
+          "products": [
+            {
+              "name": "Gemini 3.1 Pro",
+              "tag": "海外",
+              "highlight": "前端设计生成质量高，理解力强",
+              "url": "https://gemini.google.com"
+            },
+            {
+              "name": "Kimi K2.6",
+              "tag": "国内",
+              "highlight": "国内前端设计首选",
+              "url": "https://kimi.moonshot.cn"
+            }
+          ]
+        },
+        {
+          "scene": "图片与平面设计",
+          "products": [
+            {
+              "name": "GPT-image-2",
+              "tag": "海外",
+              "highlight": "独一档的夯，图片生成质量断层领先",
+              "url": "https://chat.openai.com"
+            },
+            {
+              "name": "即梦 Seedream-5.0-lite",
+              "tag": "国内",
+              "highlight": "国内图片生成天花板",
+              "url": "https://jimeng.jianying.com"
+            },
+            {
+              "name": "Midjourney",
+              "tag": "海外",
+              "highlight": "业界领先的 AI 图像生成，出图质量极高",
+              "url": "https://www.midjourney.com"
+            },
+            {
+              "name": "Nano Banana",
+              "tag": "海外",
+              "highlight": "基于 Gemini，免费高质量 AI 生图",
+              "url": "https://aistudio.google.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 设计平台",
+          "products": [
+            {
+              "name": "Canva",
+              "tag": "海外",
+              "highlight": "AI 设计平台，模板丰富，快速出图出 PPT",
+              "url": "https://www.canva.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 演示文稿",
+          "products": [
+            {
+              "name": "Gamma",
+              "tag": "海外",
+              "highlight": "输入主题直接生成专业幻灯片",
+              "url": "https://gamma.app"
+            },
+            {
+              "name": "Kimi Slides",
+              "tag": "国内",
+              "highlight": "国内可用，快速生成结构化 PPT",
+              "url": "https://kimi.moonshot.cn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multimedia",
+      "name": "多媒体生成",
+      "scenarios": [
+        {
+          "scene": "视频生成",
+          "products": [
+            {
+              "name": "Seedance 2.0",
+              "tag": "国内",
+              "highlight": "运动质感出色",
+              "url": "https://jimeng.jianying.com"
+            },
+            {
+              "name": "可灵 3.0",
+              "tag": "国内",
+              "highlight": "电影质感，原生 4K",
+              "url": "https://klingai.kuaishou.com"
+            },
+            {
+              "name": "Hailuo",
+              "tag": "国内",
+              "highlight": "MiniMax 出品，简单描述生成精彩短视频",
+              "url": "https://hailuoai.video"
+            }
+          ]
+        },
+        {
+          "scene": "音乐生成",
+          "products": [
+            {
+              "name": "Suno v5.5",
+              "tag": "海外",
+              "highlight": "音乐生成标杆，风格覆盖最广",
+              "url": "https://suno.com"
+            },
+            {
+              "name": "MiniMax Music 2.6",
+              "tag": "国内",
+              "highlight": "国内音乐生成首选",
+              "url": "https://www.minimaxi.com"
+            }
+          ]
+        },
+        {
+          "scene": "3D 生成",
+          "products": [
+            {
+              "name": "TripoAI",
+              "tag": "国内",
+              "highlight": "3D 生成领域独一档",
+              "url": "https://www.tripo3d.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tools",
+      "name": "工具与硬件",
+      "scenarios": [
+        {
+          "scene": "AI 输入法",
+          "products": [
+            {
+              "name": "豆包输入法",
+              "tag": "国内",
+              "highlight": "语音输入夯爆了",
+              "url": "https://www.doubao.com"
+            }
+          ]
+        },
+        {
+          "scene": "AI 硬件",
+          "products": [
+            {
+              "name": "飞书录音豆",
+              "tag": "国内",
+              "highlight": "录音转写神器，会议场景首选",
+              "url": "https://www.feishu.cn"
+            },
+            {
+              "name": "GetSeed 录音卡",
+              "tag": "国内",
+              "highlight": "便携 AI 录音硬件",
+              "url": "https://www.getseed.ai"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "agent",
+      "name": "Agent 平台",
+      "scenarios": [
+        {
+          "scene": "AI Agent 构建",
+          "products": [
+            {
+              "name": "Coze",
+              "tag": "海外",
+              "highlight": "用 GPT/Claude 模型做 Agent/Bot，功能强大",
+              "url": "https://www.coze.com"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "efficiency",
+      "name": "效率工具",
+      "scenarios": [
+        {
+          "scene": "AI 工作空间",
+          "products": [
+            {
+              "name": "Notion",
+              "tag": "海外",
+              "highlight": "全能工作空间，集成 AI 助手，知识库+项目管理",
+              "url": "https://www.notion.so"
+            }
+          ]
+        },
+        {
+          "scene": "工作流自动化",
+          "products": [
+            {
+              "name": "Zapier",
+              "tag": "海外",
+              "highlight": "连接 5000+ 应用，无代码自动化",
+              "url": "https://zapier.com"
+            },
+            {
+              "name": "n8n",
+              "tag": "海外",
+              "highlight": "开源工作流自动化，可自部署",
+              "url": "https://n8n.io"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

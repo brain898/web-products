@@ -1,0 +1,37 @@
+/* 君の名は · shared shell styles */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0820;
+  --card:rgba(20,16,48,0.55);
+  --card-hover:rgba(30,22,68,0.78);
+  --border:rgba(168,150,220,0.16);
+  --border-hover:rgba(255,144,160,0.4);
+  --text:var(--kimi-text,#f4eef9);
+  --text-mute:rgba(220,210,240,0.65);
+  --text-soft:rgba(180,170,210,0.5);
+  --text-dim:rgba(180,170,210,0.32);
+  --accent:var(--kimi-accent,#ffb098);
+  --thread:var(--kimi-thread,#ff8a7a);
+}
+html,body{background:var(--bg)}
+body{color:var(--text);font-family:'Inter','Noto Sans SC',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+.container{max-width:1240px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+nav.kimi-nav{padding:32px 0;display:flex;justify-content:space-between;align-items:center}
+nav.kimi-nav .logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;font-weight:400;letter-spacing:0.02em;color:var(--text);text-decoration:none;transition:color 0.3s}
+nav.kimi-nav .logo:hover{color:var(--accent)}
+nav.kimi-nav .menu{display:flex;gap:36px;font-size:13px}
+nav.kimi-nav .menu a{color:var(--text-mute);text-decoration:none;transition:color 0.3s;font-weight:300;letter-spacing:0.02em;position:relative;padding-bottom:2px}
+nav.kimi-nav .menu a.active{color:var(--accent)}
+nav.kimi-nav .menu a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:right;transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)}
+nav.kimi-nav .menu a:hover{color:var(--text)}
+nav.kimi-nav .menu a:hover::after,nav.kimi-nav .menu a.active::after{transform:scaleX(1);transform-origin:left}
+
+.kimi-footer{padding:40px 0 56px;border-top:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--text-soft);display:flex;justify-content:space-between;letter-spacing:0.05em;margin-top:60px}
+.kimi-footer a{color:inherit;text-decoration:none;transition:color 0.3s}
+.kimi-footer a:hover{color:var(--accent)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  nav.kimi-nav .menu{gap:18px;font-size:12px}
+  .container{padding:0 22px}
+}

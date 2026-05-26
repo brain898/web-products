@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人介绍网页 — 需求澄清器</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0a0820;
+  --surface:rgba(20,16,48,0.6);
+  --surface-hover:rgba(30,22,68,0.8);
+  --border:rgba(168,150,220,0.16);
+  --border-focus:rgba(168,150,220,0.4);
+  --text:#f4eef9;
+  --text-mute:rgba(220,210,240,0.65);
+  --text-soft:rgba(180,170,210,0.5);
+  --accent:#9ec0ff;
+  --accent-2:#c890ff;
+  --accent-dim:rgba(158,192,255,0.12);
+  --accent-border:rgba(158,192,255,0.35);
+  --success:#7de0a0;
+  --success-dim:rgba(125,224,160,0.12);
+  --success-border:rgba(125,224,160,0.35);
+  --user-bg:rgba(158,192,255,0.10);
+  --user-border:rgba(158,192,255,0.25);
+  --bot-bg:rgba(20,16,48,0.65);
+  --bot-border:rgba(168,150,220,0.14);
+}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter','Noto Sans SC',sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  height:100%;
+}
+body{
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── Cosmic Background ── */
+.cosmic-bg{
+  position:fixed;inset:0;z-index:0;
+  background:linear-gradient(180deg,
+    #050818 0%,#0d1638 20%,#1b2a5c 38%,#2c4380 55%,#4a5fa0 72%,#6f7fc0 86%,#aab8e8 100%);
+  pointer-events:none;
+}
+.cosmic-bg::before{
+  content:"";position:absolute;inset:-10% -10% 30% -10%;
+  background:
+    radial-gradient(ellipse 60% 50% at 22% 28%, rgba(80,130,240,0.35), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 78% 18%, rgba(170,100,220,0.22), transparent 65%);
+  filter:blur(8px);
+}
+.cosmic-bg::after{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 70% at 50% 100%, rgba(0,0,0,0.55), transparent 70%);
+}
+
+/* ── App Layout ── */
+.app{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;
+  height:100vh;max-height:100vh;
+}
+
+/* ── Header ── */
+.app-header{
+  padding:20px 32px;
+  border-bottom:1px solid var(--border);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  background:rgba(10,8,32,0.7);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.header-left{display:flex;align-items:center;gap:16px}
+.header-icon{
+  width:36px;height:36px;border-radius:10px;
+  background:linear-gradient(135deg, var(--accent), var(--accent-2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.header-title{
+  font-family:'Noto Serif SC',serif;
+  font-size:16px;font-weight:400;
+  color:var(--text);
+  letter-spacing:0.02em;
+}
+.header-sub{
+  font-size:11px;color:var(--text-soft);
+  letter-spacing:0.15em;text-transform:uppercase;
+  margin-top:2px;
+}
+.header-badge{
+  font-size:11px;
+  color:var(--accent);
+  background:var(--accent-dim);
+  border:1px solid var(--accent-border);
+  padding:4px 12px;border-radius:20px;
+  letter-spacing:0.05em;
+  transition:all 0.4s;
+}
+.header-badge.done{
+  color:var(--success);
+  background:var(--success-dim);
+  border-color:var(--success-border);
+}
+
+/* ── Progress Bar ── */
+.progress-bar{
+  height:2px;flex-shrink:0;
+  background:rgba(255,255,255,0.04);
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:linear-gradient(90deg, var(--accent), var(--accent-2));
+  transition:width 0.6s cubic-bezier(0.16,1,0.3,1);
+  border-radius:0 1px 1px 0;
+}
+
+/* ── Main Content ── */
+.main{
+  flex:1;overflow:hidden;
+  display:flex;
+}
+
+/* ── Chat Panel ── */
+.chat-panel{
+  flex:1;overflow:hidden;
+  display:flex;flex-direction:column;
+  min-width:0;
+}
+.chat-scroll{
+  flex:1;overflow-y:auto;
+  padding:32px 24px 160px;
+  scroll-behavior:smooth;
+}
+.chat-scroll::-webkit-scrollbar{width:4px}
+.chat-scroll::-webkit-scrollbar-track{background:transparent}
+.chat-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+
+.chat-area{
+  max-width:680px;
+  margin:0 auto;
+  display:flex;flex-direction:column;
+  gap:20px;
+}
+
+/* ── Messages ── */
+.msg{
+  display:flex;gap:12px;
+  max-width:92%;
+  opacity:0;transform:translateY(12px);
+  animation:msgIn 0.4s ease forwards;
+}
+.msg.user{margin-left:auto;flex-direction:row-reverse}
+@keyframes msgIn{
+  to{opacity:1;transform:translateY(0)}
+}
+
+.msg-avatar{
+  width:32px;height:32px;border-radius:10px;
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+}
+.msg.bot .msg-avatar{
+  background:linear-gradient(135deg, rgba(158,192,255,0.15), rgba(200,144,255,0.15));
+  border:1px solid rgba(158,192,255,0.2);
+}
+.msg.user .msg-avatar{
+  background:linear-gradient(135deg, rgba(125,224,160,0.15), rgba(100,200,180,0.15));
+  border:1px solid rgba(125,224,160,0.2);
+}
+
+.msg-bubble{
+  padding:14px 18px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.75;
+  font-weight:300;
+}
+.msg.bot .msg-bubble{
+  background:var(--bot-bg);
+  border:1px solid var(--bot-border);
+  border-top-left-radius:4px;
+  color:var(--text);
+}
+.msg.user .msg-bubble{
+  background:var(--user-bg);
+  border:1px solid var(--user-border);
+  border-top-right-radius:4px;
+  color:var(--text);
+}
+.msg-bubble strong{font-weight:500;color:var(--accent)}
+.msg-bubble .dim{color:var(--text-soft)}
+
+/* ── Typing Indicator ── */
+.typing-indicator{
+  display:flex;gap:12px;max-width:92%;
+  opacity:0;animation:msgIn 0.3s ease forwards;
+}
+.typing-dots{
+  padding:16px 20px;
+  background:var(--bot-bg);
+  border:1px solid var(--bot-border);
+  border-radius:16px;
+  border-top-left-radius:4px;
+  display:flex;gap:5px;align-items:center;
+}
+.typing-dots span{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--text-soft);
+  animation:dotPulse 1.4s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:0.15s}
+.typing-dots span:nth-child(3){animation-delay:0.3s}
+@keyframes dotPulse{
+  0%,60%,100%{opacity:0.3;transform:scale(0.8)}
+  30%{opacity:1;transform:scale(1.1)}
+}
+
+/* ── Options Area ── */
+.options-area{
+  max-width:680px;margin:0 auto;
+  opacity:0;transform:translateY(12px);
+  animation:msgIn 0.4s ease forwards;
+  animation-delay:0.15s;
+  padding:0 0 0 44px;
+}
+.options-area.hidden{display:none}
+
+.chips{
+  display:flex;flex-wrap:wrap;gap:8px;
+  margin-bottom:10px;
+}
+.chip{
+  padding:8px 16px;
+  border-radius:20px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);
+  color:var(--text-mute);
+  font-size:13px;font-weight:400;
+  cursor:pointer;
+  transition:all 0.3s;
+  user-select:none;
+  letter-spacing:0.01em;
+}
+.chip:hover{
+  border-color:var(--accent-border);
+  background:var(--accent-dim);
+  color:var(--text);
+}
+.chip.selected{
+  border-color:var(--accent);
+  background:var(--accent-dim);
+  color:var(--accent);
+}
+.chip::before{
+  content:"";
+  display:inline-block;
+  width:14px;height:14px;
+  border:1.5px solid var(--text-soft);
+  border-radius:4px;
+  margin-right:8px;
+  vertical-align:-2px;
+  transition:all 0.2s;
+}
+.chip.radio::before{
+  border-radius:50%;
+}
+.chip.selected::before{
+  border-color:var(--accent);
+  background:var(--accent);
+}
+.chip.radio.selected::before{
+  box-shadow:inset 0 0 0 3px var(--bg);
+}
+
+.text-input-wrap{
+  position:relative;
+  margin-top:10px;
+}
+.text-input-wrap textarea{
+  width:100%;
+  padding:14px 18px;
+  padding-right:50px;
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  border-radius:14px;
+  color:var(--text);
+  font-family:inherit;
+  font-size:14px;
+  font-weight:300;
+  line-height:1.6;
+  resize:vertical;
+  outline:none;
+  transition:border-color 0.3s,background 0.3s,box-shadow 0.3s;
+  min-height:80px;
+  cursor:text;
+  pointer-events:auto;
+  position:relative;
+  z-index:1;
+}
+.text-input-wrap textarea:focus{
+  border-color:var(--accent-border);
+  background:rgba(158,192,255,0.08);
+  box-shadow:0 0 0 3px rgba(158,192,255,0.10);
+}
+.text-input-wrap textarea::placeholder{
+  color:var(--text-soft);font-weight:300;
+}
+.send-btn{
+  position:absolute;right:10px;bottom:10px;
+  width:36px;height:36px;
+  border-radius:10px;border:none;
+  background:linear-gradient(135deg, var(--accent), var(--accent-2));
+  color:var(--bg);font-size:16px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;
+  opacity:0.5;
+  z-index:10;
+  pointer-events:auto;
+}
+.send-btn.active{opacity:1}
+.send-btn.active:hover{transform:scale(1.05)}
+.submit-row{
+  display:flex;gap:8px;margin-top:10px;
+}
+.btn{
+  padding:10px 20px;
+  border-radius:12px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);
+  color:var(--text-mute);
+  font-family:inherit;font-size:13px;
+  cursor:pointer;
+  transition:all 0.3s;
+}
+.btn:hover{
+  border-color:var(--accent-border);
+  color:var(--text);
+}
+.btn.primary{
+  background:linear-gradient(135deg, var(--accent), var(--accent-2));
+  border:none;color:var(--bg);font-weight:500;
+}
+.btn.primary:hover{opacity:0.9;transform:translateY(-1px)}
+.btn.primary:disabled{
+  opacity:0.4;cursor:not-allowed;transform:none;
+}
+.btn.skip{
+  background:transparent;
+  border:1px solid rgba(255,255,255,0.08);
+  color:var(--text-soft);
+}
+
+/* ── Prompt Preview Panel ── */
+.preview-panel{
+  width:0;
+  border-left:1px solid var(--border);
+  background:rgba(10,8,32,0.8);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  overflow:hidden;
+  transition:width 0.5s cubic-bezier(0.16,1,0.3,1);
+  flex-shrink:0;
+}
+.preview-panel.open{width:480px}
+.preview-inner{
+  width:480px;
+  height:100%;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+.preview-header{
+  padding:20px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.preview-title{
+  font-size:13px;
+  font-weight:500;
+  letter-spacing:0.08em;
+  color:var(--accent);
+}
+.preview-status{
+  font-size:11px;
+  color:var(--text-soft);
+  padding:3px 10px;
+  border-radius:12px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+}
+.preview-content{
+  flex:1;overflow-y:auto;
+  padding:20px 24px;
+}
+.preview-content::-webkit-scrollbar{width:3px}
+.preview-content::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:2px}
+
+.prompt-block{
+  background:rgba(0,0,0,0.3);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  font-size:13px;
+  line-height:1.8;
+  font-weight:300;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'SF Mono','Fira Code','Cascadia Code',monospace;
+  color:var(--text-mute);
+}
+.prompt-block .section-label{
+  color:var(--accent);
+  font-weight:500;
+  display:block;
+  margin-top:14px;
+  margin-bottom:4px;
+}
+.prompt-block .section-label:first-child{margin-top:0}
+.prompt-block .placeholder{
+  color:var(--text-soft);
+  font-style:italic;
+}
+
+.preview-footer{
+  padding:16px 24px;
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+
+/* ── Result Panel (replaces chat after generation) ── */
+.result-panel{
+  display:none;
+  flex:1;overflow-y:auto;
+  padding:40px 24px;
+}
+.result-panel.active{display:block}
+.result-inner{
+  max-width:720px;margin:0 auto;
+}
+.result-title{
+  font-family:'Noto Serif SC',serif;
+  font-size:24px;font-weight:400;
+  margin-bottom:8px;
+}
+.result-subtitle{
+  font-size:14px;color:var(--text-mute);
+  margin-bottom:32px;line-height:1.7;
+}
+.result-prompt{
+  background:rgba(0,0,0,0.35);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px;
+  font-size:13px;
+  line-height:1.9;
+  font-weight:300;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-family:'SF Mono','Fira Code','Cascadia Code',monospace;
+  color:var(--text);
+  margin-bottom:24px;
+  position:relative;
+}
+.result-prompt .section-label{
+  color:var(--accent);
+  font-weight:600;
+  display:block;
+  margin-top:18px;
+  margin-bottom:6px;
+  font-size:13px;
+}
+.result-prompt .section-label:first-child{margin-top:0}
+.result-actions{
+  display:flex;gap:12px;
+  margin-bottom:40px;
+}
+.result-note{
+  font-size:13px;
+  color:var(--text-soft);
+  line-height:1.8;
+  padding:20px;
+  background:rgba(255,255,255,0.02);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.result-note strong{color:var(--accent);font-weight:500}
+
+/* ── Mobile ── */
+@media(max-width:900px){
+  .preview-panel{
+    position:fixed;
+    top:0;right:0;bottom:0;
+    z-index:100;
+    width:0;
+    box-shadow:-10px 0 40px rgba(0,0,0,0.5);
+  }
+  .preview-panel.open{width:100%}
+  .preview-inner{width:100%}
+}
+@media(max-width:600px){
+  .app-header{padding:16px 20px}
+  .chat-scroll{padding:20px 16px 16px}
+  .options-area{padding-left:0}
+  .msg{max-width:98%}
+  .msg-avatar{width:28px;height:28px;font-size:11px}
+}
+</style>
+</head>
+<body>
+<div class="cosmic-bg"></div>
+<div class="app">
+  <div class="app-header">
+    <div class="header-left">
+      <div class="header-icon">&#10024;</div>
+      <div>
+        <div class="header-title">个人介绍网页 · 需求澄清器</div>
+        <div class="header-sub">Powered by Clarifier</div>
+      </div>
+    </div>
+    <div class="header-badge" id="badge">进行中</div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+
+  <div class="main">
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-scroll" id="chatScroll">
+        <div class="chat-area" id="chatArea"></div>
+      </div>
+    </div>
+
+    <div class="result-panel" id="resultPanel">
+      <div class="result-inner">
+        <div class="result-title">你的提示词已生成</div>
+        <div class="result-subtitle">复制下面的提示词，粘贴给 Claude Code，它会帮你生成个人介绍网页。</div>
+        <div class="result-prompt" id="resultPrompt"></div>
+        <div class="result-actions">
+          <button class="btn primary" onclick="copyPrompt()">复制提示词</button>
+          <button class="btn" onclick="restart()">重新开始</button>
+          <button class="btn" onclick="togglePreview()">查看实时预览</button>
+        </div>
+        <div class="result-note">
+          <strong>使用方法：</strong>打开终端，进入你想放网页的文件夹，输入 <strong>claude</strong> 启动 Claude Code，然后把提示词粘贴进去。Claude Code 会自动帮你生成完整的个人介绍网页。<br><br>
+          <strong>提示：</strong>如果你对生成结果不满意，可以直接跟 Claude Code 说「我想调整 XX 部分」，它会帮你迭代修改。
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-panel" id="previewPanel">
+      <div class="preview-inner">
+        <div class="preview-header">
+          <div class="preview-title">Prompt Preview</div>
+          <div class="preview-status" id="previewStatus">0 / 8 已收集</div>
+        </div>
+        <div class="preview-content">
+          <div class="prompt-block" id="promptPreview">
+            <span class="placeholder">完成问题后，提示词会在这里实时生成...</span>
+          </div>
+        </div>
+        <div class="preview-footer">
+          <button class="btn" onclick="togglePreview()" style="width:100%">关闭预览</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+var S = {
+  identity: '',
+  context: '',
+  strengths: '',
+  impression: '',
+  positioning: '',
+  highlights: '',
+  style: '',
+  extra: ''
+};
+
+var answered = 0;
+var total = 8;
+var currentStage = '';
+
+// ── Identity labels ──
+var identityLabels = {
+  student: '在校学生',
+  working: '在职 / 实习中',
+  freelancer: '自由职业 / 独立开发者',
+  other: '其他'
+};
+
+// ── Utility ──
+function $(id){ return document.getElementById(id); }
+function sleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
+function esc(s){
+  var d=document.createElement('div');d.textContent=s;return d.innerHTML;
+}
+
+// ── Chat Helpers ──
+function scrollToBottom(){
+  var el=$('chatScroll');
+  setTimeout(function(){ el.scrollTop=el.scrollHeight; }, 50);
+}
+
+function addBotMessage(html){
+  var area=$('chatArea');
+  var div=document.createElement('div');
+  div.className='msg bot';
+  div.innerHTML='<div class="msg-avatar">A</div><div class="msg-bubble">'+html+'</div>';
+  area.appendChild(div);
+  scrollToBottom();
+}
+
+function addUserMessage(text){
+  var area=$('chatArea');
+  var div=document.createElement('div');
+  div.className='msg user';
+  div.innerHTML='<div class="msg-avatar">Y</div><div class="msg-bubble">'+esc(text)+'</div>';
+  area.appendChild(div);
+  scrollToBottom();
+}
+
+function showTyping(){
+  var area=$('chatArea');
+  var div=document.createElement('div');
+  div.className='typing-indicator';
+  div.id='typing';
+  div.innerHTML='<div class="msg-avatar" style="background:linear-gradient(135deg,rgba(158,192,255,0.15),rgba(200,144,255,0.15));border:1px solid rgba(158,192,255,0.2);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:13px">A</div><div class="typing-dots"><span></span><span></span><span></span></div>';
+  area.appendChild(div);
+  scrollToBottom();
+}
+function hideTyping(){
+  var el=$('typing');
+  if(el) el.remove();
+}
+
+function clearOptions(){
+  var old=$('optionsArea');
+  if(old) old.remove();
+}
+
+function showOptions(html){
+  clearOptions();
+  var area=$('chatArea');
+  var div=document.createElement('div');
+  div.className='options-area';
+  div.id='optionsArea';
+  div.innerHTML=html;
+  area.appendChild(div);
+  scrollToBottom();
+}
+
+function updateProgress(){
+  var pct=Math.round(answered/total*100);
+  $('progress').style.width=pct+'%';
+  $('previewStatus').textContent=answered+' / '+total+' 已收集';
+  if(answered>=total){
+    $('badge').textContent='已完成';
+    $('badge').className='header-badge done';
+  }
+}
+
+// ── Prompt Preview ──
+function updatePreview(){
+  var parts=[];
+  parts.push('<span class="section-label">Background</span>');
+  if(S.identity) parts.push(identityLabels[S.identity]||S.identity);
+  if(S.context) parts.push(S.context);
+  if(S.positioning) parts.push('目标：'+S.positioning);
+  if(S.impression) parts.push('印象：'+S.impression);
+
+  parts.push('<span class="section-label">Role</span>');
+  parts.push('你是一个擅长个人品牌网站设计的前端开发者，能把一个人的经历和能力转化为有视觉冲击力的单页网站，同时保持内容真实、不浮夸。');
+
+  parts.push('<span class="section-label">Objective</span>');
+  if(S.strengths){
+    parts.push('为这个人生成一个个人介绍网页，展示：'+S.strengths);
+  }else{
+    parts.push('<span class="placeholder">等待收集信息...</span>');
+  }
+
+  parts.push('<span class="section-label">Key Result</span>');
+  parts.push('网站需要完整可运行（单个HTML文件）');
+  if(S.style) parts.push('视觉风格：'+S.style);
+  parts.push('移动端自适应');
+  if(S.highlights) parts.push('重点突出：'+S.highlights);
+
+  $('promptPreview').innerHTML=parts.join('\n');
+}
+
+function updatePreviewPanel(){
+  if($('previewPanel').classList.contains('open')){
+    updatePreview();
+  }
+}
+
+// ── Toggle Preview ──
+function togglePreview(){
+  var panel=$('previewPanel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
+    updatePreview();
+  }
+}
+
+// ── Chip Selection (single) ──
+function selectSingle(el, value, callback){
+  var parent=el.closest('.chips');
+  var chips=parent.querySelectorAll('.chip');
+  chips.forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  setTimeout(function(){ callback(value); }, 300);
+}
+
+// ── Chip Selection (multi) ──
+function toggleChip(el){
+  el.classList.toggle('selected');
+}
+
+// ── Stage Execution ──
+async function runStage(name, delay){
+  if(delay) await sleep(delay);
+  currentStage=name;
+  stages[name]();
+}
+
+var stages = {};
+
+// ── Welcome ──
+stages.welcome = async function(){
+  showTyping();
+  await sleep(800);
+  hideTyping();
+  addBotMessage(
+    '你好！我来帮你理清「个人介绍网页」的需求。<br><br>'+
+    '接下来我会问你 <strong>8 个问题</strong>，每个都很简单，点选或者写几句就行。回答完之后，我会生成一份<strong>可以直接给 Claude Code 用的提示词</strong>，它会帮你做出一个个人介绍网页。<br><br>'+
+    '<span class="dim">想清楚再动手，比改来改去快 10 倍。</span>'
+  );
+  await sleep(600);
+  runStage('q1', 800);
+};
+
+// ── Q1: Identity ──
+stages.q1 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage('<strong>1/8 你现在的身份是？</strong><br><span class="dim">我猜你大概率是在校学生，因为大多数做个人网页的是大学生或应届生。</span>');
+  showOptions(
+    '<div class="chips">'+
+      '<span class="chip radio" onclick="selectSingle(this,\'student\',answerQ1)">在校学生</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'working\',answerQ1)">在职 / 实习中</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'freelancer\',answerQ1)">自由职业 / 独立开发者</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'other\',answerQ1)">其他</span>'+
+    '</div>'
+  );
+};
+
+function answerQ1(value){
+  S.identity=value;
+  answered++;
+  addUserMessage(identityLabels[value]||value);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q2', 600);
+}
+
+// ── Q2: Context ──
+stages.q2 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+
+  var hint='';
+  if(S.identity==='student'){
+    hint='比如：「浙江工商大学 计算机大二」或者「北大 硕士在读 人工智能方向」';
+  }else if(S.identity==='working'){
+    hint='比如：「字节跳动 后端开发 2年经验」或者「创业中 做AI教育」';
+  }else if(S.identity==='freelancer'){
+    hint='比如：「独立开发者 做过3个小产品」或者「自由设计师 接品牌项目」';
+  }else{
+    hint='简单介绍一下你目前在做什么';
+  }
+
+  addBotMessage('<strong>2/8 简单说一下你的背景？</strong><br><span class="dim">'+esc(hint)+'</span>');
+  showOptions(
+    '<div class="text-input-wrap">'+
+      '<textarea id="q2Input" placeholder="写几句就好..." rows="3" oninput="checkTextarea(this)"></textarea>'+
+      '<button class="send-btn active" onclick="answerQ2()" id="q2Send">&#10148;</button>'+
+    '</div>'
+  );
+  setTimeout(function(){
+    var el=document.getElementById('q2Input');
+    if(el){ el.focus(); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }, 300);
+};
+
+function answerQ2(){
+  var v=$('q2Input').value.trim();
+  if(!v) return;
+  S.context=v;
+  answered++;
+  addUserMessage(v);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q3', 600);
+}
+
+// ── Q3: Strengths ──
+stages.q3 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+
+  var chips='';
+  if(S.identity==='student'){
+    chips=
+      '<span class="chip" onclick="toggleChip(this)">项目经历</span>'+
+      '<span class="chip" onclick="toggleChip(this)">实习经历</span>'+
+      '<span class="chip" onclick="toggleChip(this)">竞赛/获奖</span>'+
+      '<span class="chip" onclick="toggleChip(this)">技术栈</span>'+
+      '<span class="chip" onclick="toggleChip(this)">自媒体/博客</span>'+
+      '<span class="chip" onclick="toggleChip(this)">社团/学生工作</span>'+
+      '<span class="chip" onclick="toggleChip(this)">开源贡献</span>'+
+      '<span class="chip" onclick="toggleChip(this)">个人作品集</span>';
+  }else{
+    chips=
+      '<span class="chip" onclick="toggleChip(this)">项目经历</span>'+
+      '<span class="chip" onclick="toggleChip(this)">工作经历</span>'+
+      '<span class="chip" onclick="toggleChip(this)">技术栈</span>'+
+      '<span class="chip" onclick="toggleChip(this)">作品集</span>'+
+      '<span class="chip" onclick="toggleChip(this)">开源/社区</span>'+
+      '<span class="chip" onclick="toggleChip(this)">自媒体/影响力</span>'+
+      '<span class="chip" onclick="toggleChip(this)">证书/奖项</span>'+
+      '<span class="chip" onclick="toggleChip(this)">创业经历</span>';
+  }
+
+  addBotMessage(
+    '<strong>3/8 你有什么值得展示的？</strong><br>'+
+    '<span class="dim">可以多选。不确定的话，想一下：如果面试官只能看你的网站 30 秒，你最希望他看到什么？</span>'
+  );
+  showOptions(
+    '<div class="chips" id="q3Chips">'+chips+'</div>'+
+    '<div style="margin-top:8px;font-size:12px;color:var(--text-soft)">选完后点击「下一步」，也可以补充说明</div>'+
+    '<div class="text-input-wrap">'+
+      '<textarea id="q3Input" placeholder="补充说明（可选），比如：做过一个AI日报工具、拿过省级竞赛银奖..." rows="2" oninput="checkTextarea(this)" onclick="this.focus()"></textarea>'+
+    '</div>'+
+    '<div class="submit-row">'+
+      '<button class="btn primary" onclick="answerQ3()">下一步</button>'+
+      '<button class="btn skip" onclick="answerQ3Skip()">跳过</button>'+
+    '</div>'
+  );
+};
+
+function answerQ3(){
+  var chips=$('q3Chips').querySelectorAll('.chip.selected');
+  var selected=[];
+  chips.forEach(function(c){ selected.push(c.textContent); });
+  var extra=$('q3Input').value.trim();
+  var parts=[];
+  if(selected.length) parts.push(selected.join('、'));
+  if(extra) parts.push(extra);
+  var val=parts.join('；') || '（跳过）';
+  S.strengths=val;
+  answered++;
+  addUserMessage(val);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q4', 600);
+}
+function answerQ3Skip(){
+  S.strengths='（未指定）';
+  answered++;
+  addUserMessage('跳过');
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q4', 600);
+}
+
+// ── Q4: Impression ──
+stages.q4 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage(
+    '<strong>4/8 别人看到你的网站，你希望第一印象是什么？</strong><br>'+
+    '<span class="dim">选一个最接近的，或者用自己的话说。</span>'
+  );
+  showOptions(
+    '<div class="chips">'+
+      '<span class="chip radio" onclick="selectSingle(this,\'技术很强\',answerQ4)">技术很强的开发者</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'有创造力\',answerQ4)">有创造力 / 审美好</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'做事靠谱\',answerQ4)">做事靠谱、有执行力</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'全面发展\',answerQ4)">全面、什么都会一点</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'有想法\',answerQ4)">有想法、爱折腾</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'真实\',answerQ4)">真实、不装</span>'+
+    '</div>'
+  );
+};
+
+function answerQ4(value){
+  S.impression=value;
+  answered++;
+  addUserMessage(value);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q5', 600);
+}
+
+// ── Q5: Positioning ──
+stages.q5 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage(
+    '<strong>5/8 做这个网页主要为了什么？</strong><br>'+
+    '<span class="dim">选最主要的一个目的。我猜是为了找工作/实习，因为大多数人做个人网页的动机是这个。</span>'
+  );
+  showOptions(
+    '<div class="chips">'+
+      '<span class="chip radio" onclick="selectSingle(this,\'求职 / 找实习\',answerQ5)">求职 / 找实习</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'个人品牌 / 让人认识我\',answerQ5)">个人品牌 / 让人认识我</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'展示作品集\',answerQ5)">展示作品集</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'社交 / 让朋友看到\',answerQ5)">社交 / 让朋友看到</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'纯好玩\',answerQ5)">纯好玩 / 练手</span>'+
+    '</div>'
+  );
+};
+
+function answerQ5(value){
+  S.positioning=value;
+  answered++;
+  addUserMessage(value);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q6', 600);
+}
+
+// ── Q6: Highlights ──
+stages.q6 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage(
+    '<strong>6/8 有没有特别想突出的内容？</strong><br>'+
+    '<span class="dim">比如：某个项目特别骄傲、某段经历特别想讲、某个技能特别想展示。没有的话跳过就行。</span>'
+  );
+  showOptions(
+    '<div class="text-input-wrap">'+
+      '<textarea id="q6Input" placeholder="比如：做过一个XX产品，日活200人；或者：在XX公司实习过..." rows="3" oninput="checkTextarea(this)"></textarea>'+
+      '<button class="send-btn active" onclick="answerQ6()" id="q6Send">&#10148;</button>'+
+    '</div>'+
+    '<div class="submit-row">'+
+      '<button class="btn skip" onclick="answerQ6Skip()">没有，跳过</button>'+
+    '</div>'
+  );
+  setTimeout(function(){
+    var el=document.getElementById('q6Input');
+    if(el){ el.focus(); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }, 300);
+};
+
+function answerQ6(){
+  var v=$('q6Input').value.trim();
+  if(!v) return;
+  S.highlights=v;
+  answered++;
+  addUserMessage(v);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q7', 600);
+}
+function answerQ6Skip(){
+  S.highlights='（无特别突出项）';
+  answered++;
+  addUserMessage('跳过');
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q7', 600);
+}
+
+// ── Q7: Style ──
+stages.q7 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage(
+    '<strong>7/8 你喜欢什么视觉风格？</strong><br>'+
+    '<span class="dim">这个决定网站的整体感觉。选不出来也没关系，选「没想好」我给个默认的。</span>'
+  );
+  showOptions(
+    '<div class="chips">'+
+      '<span class="chip radio" onclick="selectSingle(this,\'暗色酷感（深色背景+科技感）\',answerQ7)">暗色酷感</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'简洁明亮（白底+干净排版）\',answerQ7)">简洁明亮</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'创意 / 有视觉冲击力\',answerQ7)">创意冲击</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'文艺 / 有质感\',answerQ7)">文艺质感</span>'+
+      '<span class="chip radio" onclick="selectSingle(this,\'没想好，你推荐一个\',answerQ7)">没想好</span>'+
+    '</div>'
+  );
+};
+
+function answerQ7(value){
+  S.style=value;
+  answered++;
+  addUserMessage(value);
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('q8', 600);
+}
+
+// ── Q8: Extra ──
+stages.q8 = async function(){
+  showTyping();
+  await sleep(600);
+  hideTyping();
+  addBotMessage(
+    '<strong>8/8 最后一个：还有其他想法或特殊要求吗？</strong><br>'+
+    '<span class="dim">比如：想加英文版、想放照片、想用某个参考网站的风格。没有的话直接跳过。</span>'
+  );
+  showOptions(
+    '<div class="text-input-wrap">'+
+      '<textarea id="q8Input" placeholder="随便写几句..." rows="3" oninput="checkTextarea(this)"></textarea>'+
+      '<button class="send-btn active" onclick="answerQ8()" id="q8Send">&#10148;</button>'+
+    '</div>'+
+    '<div class="submit-row">'+
+      '<button class="btn skip" onclick="answerQ8Skip()">没有了，生成提示词</button>'+
+    '</div>'
+  );
+  setTimeout(function(){
+    var el=document.getElementById('q8Input');
+    if(el){ el.focus(); el.scrollIntoView({behavior:'smooth',block:'center'}); }
+  }, 300);
+};
+
+function answerQ8(){
+  var v=$('q8Input').value.trim();
+  S.extra=v||'（无）';
+  answered++;
+  addUserMessage(v||'没有了');
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('summary', 600);
+}
+function answerQ8Skip(){
+  S.extra='（无）';
+  answered++;
+  addUserMessage('没有了');
+  clearOptions();
+  updateProgress();
+  updatePreviewPanel();
+  runStage('summary', 600);
+}
+
+// ── Summary ──
+stages.summary = async function(){
+  showTyping();
+  await sleep(800);
+  hideTyping();
+
+  var summary=
+    '我整理一下你的情况：<br><br>'+
+    '<strong>&#10003; 身份：</strong>'+esc(identityLabels[S.identity]||S.identity)+'<br>'+
+    '<strong>&#10003; 背景：</strong>'+esc(S.context)+'<br>'+
+    '<strong>&#10003; 展示内容：</strong>'+esc(S.strengths)+'<br>'+
+    '<strong>&#10003; 第一印象：</strong>'+esc(S.impression)+'<br>'+
+    '<strong>&#10003; 核心目的：</strong>'+esc(S.positioning)+'<br>'+
+    '<strong>&#10003; 视觉风格：</strong>'+esc(S.style)+'<br>'+
+    (S.highlights!=='（无特别突出项）'?'<strong>&#10003; 重点突出：</strong>'+esc(S.highlights)+'<br>':'')+
+    (S.extra!=='（无）'?'<strong>&#10003; 其他：</strong>'+esc(S.extra)+'<br>':'')+
+    '<br>信息足够了，正在生成提示词...';
+
+  addBotMessage(summary);
+  await sleep(1200);
+  runStage('generate');
+};
+
+// ── Generate Prompt ──
+stages.generate = async function(){
+  showTyping();
+  await sleep(1000);
+  hideTyping();
+
+  var prompt = buildPrompt();
+
+  addBotMessage(
+    '<strong>提示词已生成！</strong><br><br>'+
+    '我已经把它放在右边的预览面板里了（手机端会全屏显示）。你可以直接复制，粘贴给 Claude Code。<br><br>'+
+    '<span class="dim">Claude Code 会根据这份提示词帮你生成完整的个人介绍网页，包含 HTML + CSS + JS，开箱即用。</span>'
+  );
+
+  // Show result panel
+  $('chatPanel').style.display='none';
+  $('resultPanel').classList.add('active');
+  $('resultPrompt').innerHTML=prompt;
+
+  // Also update preview
+  $('previewPanel').classList.add('open');
+  $('promptPreview').innerHTML=prompt;
+  updateProgress();
+};
+
+function buildPrompt(){
+  var lines=[];
+
+  lines.push('<span class="section-label">Background</span>');
+  lines.push('我要做一个个人介绍网页。');
+  lines.push('我的身份：'+esc(identityLabels[S.identity]||S.identity));
+  lines.push('我的背景：'+esc(S.context));
+  lines.push('做这个网页的目的：'+esc(S.positioning));
+
+  lines.push('');
+  lines.push('<span class="section-label">Role</span>');
+  lines.push('你是一个擅长个人品牌网站设计的前端开发者。你能把一个人的经历和能力转化为有视觉冲击力的单页网站，同时保持内容真实、不浮夸。你熟悉现代前端技术，擅长用纯 HTML/CSS/JS 做出精美的效果，不需要任何框架依赖。');
+
+  lines.push('');
+  lines.push('<span class="section-label">Objective</span>');
+  lines.push('帮我生成一个完整的个人介绍网页（单个 HTML 文件，内嵌 CSS 和 JS），要求如下：');
+  lines.push('');
+  lines.push('1. 网站包含以下模块：');
+  lines.push('   - 首屏 Hero 区域（名字 + 一句话定位 + 简短自我介绍）');
+  if(S.strengths && S.strengths!=='（跳过）'){
+    lines.push('   - 核心展示区：'+esc(S.strengths));
+  }
+  lines.push('   - 关于我（个人背景、兴趣、价值观的自然叙述）');
+  lines.push('   - 底部 Footer（联系方式 / 社交链接占位）');
+  lines.push('');
+  lines.push('2. 视觉风格要求：');
+  lines.push('   - '+esc(S.style));
+  lines.push('   - 移动端完美适配（响应式设计）');
+  lines.push('   - 有适当的动画效果（滚动淡入、hover 交互等），但不要过度');
+  lines.push('');
+  lines.push('3. 内容要求：');
+  lines.push('   - 用占位内容填充，但结构要完整，我后面替换真实内容');
+  lines.push('   - 第一印象要传达：'+esc(S.impression));
+  if(S.highlights && S.highlights!=='（无特别突出项）'){
+    lines.push('   - 特别需要突出的部分：'+esc(S.highlights));
+  }
+
+  lines.push('');
+  lines.push('<span class="section-label">Key Result</span>');
+  lines.push('1. 文件可以直接在浏览器打开，无需任何服务器或构建工具');
+  lines.push('2. 所有样式内嵌在一个 HTML 文件中，不依赖外部 CSS 文件（Google Fonts 可以用 CDN）');
+  lines.push('3. 在手机和电脑上都有良好的阅读体验');
+  lines.push('4. 页面加载速度快，没有大型依赖');
+  lines.push('5. 代码结构清晰，方便我后续修改内容和样式');
+
+  if(S.extra && S.extra!=='（无）'){
+    lines.push('');
+    lines.push('<span class="section-label">Additional Notes</span>');
+    lines.push(esc(S.extra));
+  }
+
+  return lines.join('\n');
+}
+
+// ── Copy ──
+function copyPrompt(){
+  var el=$('resultPrompt');
+  var text=el.textContent||el.innerText;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(function(){
+      alert('已复制到剪贴板！直接粘贴给 Claude Code 就行。');
+    });
+  }else{
+    // Fallback
+    var ta=document.createElement('textarea');
+    ta.value=text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('已复制到剪贴板！');
+  }
+}
+
+// ── Restart ──
+function restart(){
+  S={identity:'',context:'',strengths:'',impression:'',positioning:'',highlights:'',style:'',extra:''};
+  answered=0;
+  $('chatArea').innerHTML='';
+  $('resultPanel').classList.remove('active');
+  $('chatPanel').style.display='';
+  $('previewPanel').classList.remove('open');
+  $('badge').textContent='进行中';
+  $('badge').className='header-badge';
+  $('progress').style.width='0%';
+  runStage('welcome');
+}
+
+// ── Textarea helpers ──
+function checkTextarea(el){
+  var wrap=el.closest('.options-area');
+  if(!wrap) return;
+  var btn=wrap.querySelector('.send-btn');
+  if(btn){
+    if(el.value.trim()){
+      btn.classList.add('active');
+    }else{
+      btn.classList.remove('active');
+    }
+  }
+}
+
+// Keyboard support for textareas
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter' && !e.shiftKey){
+    var active=document.activeElement;
+    if(active && active.tagName==='TEXTAREA'){
+      e.preventDefault();
+      // Find the send button in the same options area
+      var wrap=active.closest('.options-area');
+      if(wrap){
+        var btn=wrap.querySelector('.send-btn');
+        if(btn) btn.click();
+      }
+    }
+  }
+});
+
+// ── Start ──
+runStage('welcome');
+</script>
+</body>
+</html>

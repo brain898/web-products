@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>叶文哲 — AI 应用开发者</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1A1A1C;--bg-card:#222226;--border:#2D2D30;--border-hover:#404048;--text:#FAFAFA;--text-mute:#A0A0A8;--text-soft:#6A6A72;--accent:#E8B86D}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans SC',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:1240px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+nav{padding:32px 0;display:flex;justify-content:space-between;align-items:center}
+nav .logo{font-family:'Inter',sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:var(--text);text-decoration:none;transition:color 0.2s}
+nav .logo:hover{color:var(--accent)}
+nav .menu{display:flex;gap:40px;font-size:14px}
+nav .menu a{color:var(--text-mute);text-decoration:none;transition:color 0.2s;font-weight:400}
+nav .menu a:hover{color:var(--text)}
+.hero{padding:160px 0 120px}
+.hero .label{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:32px;font-weight:500;opacity:0;animation:fadeUp 0.6s ease forwards 0.1s}
+.hero h1{font-family:'Inter',sans-serif;font-size:clamp(56px,8vw,112px);font-weight:200;letter-spacing:-0.05em;line-height:0.95;margin-bottom:36px;opacity:0;animation:fadeUp 0.6s ease forwards 0.25s}
+.hero h1 .strong{font-weight:600}
+.hero .tagline{font-family:'Noto Sans SC',sans-serif;font-size:clamp(18px,2.5vw,26px);font-weight:200;color:var(--text-mute);max-width:720px;line-height:1.5;margin-bottom:20px;letter-spacing:-0.01em;opacity:0;animation:fadeUp 0.6s ease forwards 0.4s}
+.hero .meta{font-family:'Inter',sans-serif;font-size:14px;color:var(--text-soft);letter-spacing:0.02em;opacity:0;animation:fadeUp 0.6s ease forwards 0.5s}
+.hero .bio{font-family:'Noto Sans SC',sans-serif;font-size:17px;color:var(--text-mute);max-width:720px;line-height:1.8;margin-bottom:12px;font-weight:300;opacity:0;animation:fadeUp 0.6s ease forwards 0.42s}
+.cards-section{padding:0 0 140px}
+.cards-label{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);margin-bottom:40px;text-transform:uppercase;letter-spacing:0.15em;font-weight:500}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:40px 32px;text-decoration:none;color:var(--text);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;min-height:320px;opacity:0;animation:fadeUp 0.6s ease forwards}
+.card:nth-child(1){animation-delay:0.6s}.card:nth-child(2){animation-delay:0.7s}.card:nth-child(3){animation-delay:0.8s}
+.card:hover{background:#2A2A2E;border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 30px 60px -20px rgba(0,0,0,0.5)}
+.card:hover .arrow{transform:translateX(4px)}
+.card .num{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);margin-bottom:32px;font-weight:400;letter-spacing:0.05em}
+.card .title-en{font-family:'Inter',sans-serif;font-size:32px;font-weight:500;letter-spacing:-0.03em;margin-bottom:4px;line-height:1.1}
+.card .title-zh{font-family:'Noto Sans SC',sans-serif;font-size:14px;color:var(--text-mute);margin-bottom:32px;font-weight:300}
+.card .desc{font-family:'Noto Sans SC',sans-serif;font-size:14px;color:var(--text-mute);line-height:1.7;flex:1;font-weight:300}
+.card .arrow{margin-top:24px;font-family:'Inter',sans-serif;font-size:14px;color:var(--accent);transition:transform 0.3s;font-weight:500}
+footer{padding:48px 0;border-top:1px solid var(--border);font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);display:flex;justify-content:space-between;font-weight:400}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .hero h1{font-size:56px}.hero .tagline{font-size:18px}
+  .cards{grid-template-columns:1fr}
+  nav .menu{gap:24px;font-size:13px}
+  .container{padding:0 24px}
+  .hero{padding:100px 0 80px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html">AI 工具箱</a>
+      <a href="course.html">课程拆解</a>
+      <a href="works.html">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Hello, I'm</div>
+    <h1>叶文哲<span class="strong">.</span></h1>
+    <p class="tagline">用 AI 做出能用的小产品，分享给身边的朋友。</p>
+    <p class="bio">浙江工商大学计算机在读。</p>
+    <p class="bio">不追前沿论文，不卷算法竞赛，专注做一件事——用 AI 把身边的需求变成能跑起来的工具。AI 日报、问卷网页、AI 知识库、学习教练……都是从朋友的一句话开始，用几天时间做出来、上线、让人直接用。</p>
+    <p class="bio">我相信好产品不是想出来的，是做出来的。</p>
+    <p class="meta">浙江工商大学 &middot; 计算机 &middot; AI 应用开发</p>
+  </section>
+
+  <section class="cards-section">
+    <div class="cards-label">探索</div>
+    <div class="cards">
+      <a href="toolbox.html" class="card">
+        <div class="num">01 &mdash; Toolbox</div>
+        <div class="title-en">AI Toolbox</div>
+        <div class="title-zh">AI 工具箱</div>
+        <div class="desc">2026 最值得用的 AI 模型与工具，37 张精选卡片，海外 + 国内分类筛选，每 3 天 AI 自动刷新。</div>
+        <div class="arrow">查看 &rarr;</div>
+      </a>
+      <a href="course.html" class="card">
+        <div class="num">02 &mdash; Insights</div>
+        <div class="title-en">Course Insights</div>
+        <div class="title-zh">课程拆解</div>
+        <div class="desc">用「道法术器」框架解构核心方法论。第一篇：自我决定理论（SDT）与内驱保护。</div>
+        <div class="arrow">查看 &rarr;</div>
+      </a>
+      <a href="works.html" class="card">
+        <div class="num">03 &mdash; Works</div>
+        <div class="title-en">Projects</div>
+        <div class="title-zh">作品集</div>
+        <div class="desc">6 个 AI 产品：行情日报 / 问卷网页 / 知识图谱 / AI 工具箱 / 学习教练 / AI 日报。</div>
+        <div class="arrow">查看 &rarr;</div>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Built with Claude Code</span>
+    <span>2026</span>
+  </footer>
+</div>
+</body>
+</html>

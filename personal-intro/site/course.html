@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程拆解 — 叶文哲</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kimi-shared.css">
+<style>
+.hero{padding:80px 0 48px;position:relative}
+.hero .label{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:20px;font-weight:400;opacity:0;animation:fadeUp 0.8s ease forwards 0.1s}
+.hero .label::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px;opacity:0.7}
+.hero .jp-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--accent);letter-spacing:0.05em;margin-bottom:8px;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;font-weight:300}
+.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(48px,7vw,96px);font-weight:300;letter-spacing:0.02em;line-height:1.05;margin-bottom:24px;opacity:0;animation:fadeUp 0.9s ease forwards 0.28s}
+.hero h1 .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:0.42em;color:var(--text-mute);display:block;margin-top:14px;letter-spacing:0.05em}
+.hero .lede{font-family:'Noto Sans SC',sans-serif;font-size:15px;color:var(--text-mute);max-width:720px;line-height:1.95;font-weight:300;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s}
+
+/* Framework strip */
+.framework-key{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:48px 0 56px;opacity:0;animation:fadeUp 0.8s ease forwards 0.5s}
+.fw-cell{padding:22px 24px;border:1px solid var(--border);border-radius:14px;background:rgba(20,16,48,0.4);backdrop-filter:blur(8px);position:relative}
+.fw-cell .ja{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--accent);letter-spacing:0.18em;text-transform:uppercase;margin-bottom:8px}
+.fw-cell .ch{font-family:'Noto Serif SC',serif;font-size:36px;font-weight:300;color:var(--text);margin-bottom:6px;line-height:1}
+.fw-cell .desc{font-family:'Noto Sans SC',sans-serif;font-size:11px;color:var(--text-soft);line-height:1.7;font-weight:300}
+
+/* Article cards */
+.list-label{display:flex;align-items:center;gap:16px;margin-bottom:32px;opacity:0;animation:fadeUp 0.8s ease forwards 0.6s}
+.list-label .ja{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0.1em}
+.list-label .en{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.3em}
+.list-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+
+.articles{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-bottom:80px}
+.article-card{background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:18px;padding:32px 32px 28px;cursor:pointer;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;min-height:280px;position:relative;overflow:hidden;opacity:0;animation:fadeUp 0.8s ease forwards}
+.article-card:nth-child(1){animation-delay:0.7s}
+.article-card:nth-child(2){animation-delay:0.8s}
+.article-card::after{content:"";position:absolute;left:50%;top:50%;width:200%;height:200%;transform:translate(-50%,-50%);background:radial-gradient(circle at center,rgba(255,140,140,0.16),transparent 40%);opacity:0;transition:opacity 0.6s;pointer-events:none}
+.article-card:hover{background:var(--card-hover);transform:translateY(-4px);border-color:var(--border-hover);box-shadow:0 30px 60px -20px rgba(0,0,0,0.6),0 0 40px -10px var(--thread)}
+.article-card:hover::after{opacity:1}
+.article-card .num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);margin-bottom:18px;letter-spacing:0.08em}
+.article-card .tag-row{display:flex;gap:8px;margin-bottom:20px}
+.article-card .ctag{padding:3px 10px;border-radius:10px;background:rgba(168,144,255,0.12);color:#c8b8ff;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.08em;font-weight:400}
+.article-card .title-zh{font-family:'Noto Serif SC',serif;font-size:30px;font-weight:400;color:var(--text);margin-bottom:8px;letter-spacing:0.02em;line-height:1.2}
+.article-card .title-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--accent);margin-bottom:18px;font-weight:300;letter-spacing:0.03em}
+.article-card .summary{font-family:'Noto Sans SC',sans-serif;font-size:13.5px;color:var(--text-mute);line-height:1.85;flex:1;font-weight:300}
+.article-card .arrow{margin-top:20px;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-mute);transition:all 0.4s;letter-spacing:0.05em}
+.article-card:hover .arrow{transform:translateX(6px);color:var(--accent)}
+
+/* Article view */
+.article-view{display:none;max-width:760px;margin:0 auto;padding:48px 40px 80px;position:relative;z-index:2}
+.article-view.active{display:block}
+.article-back{display:inline-flex;align-items:center;gap:8px;margin-bottom:32px;padding:8px 16px 8px 12px;border:1px solid var(--border);border-radius:24px;color:var(--text-mute);text-decoration:none;font-family:'Inter',sans-serif;font-size:12px;background:rgba(20,16,48,0.4);backdrop-filter:blur(8px);transition:all 0.3s;cursor:pointer}
+.article-back:hover{border-color:var(--border-hover);color:var(--accent)}
+.article-meta{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--text-soft);letter-spacing:0.05em;margin-bottom:16px}
+.article-view h1{font-family:'Noto Serif SC',serif;font-size:clamp(40px,5.5vw,72px);font-weight:300;line-height:1.05;margin-bottom:18px;letter-spacing:0.02em}
+.article-view h1 .dot{display:inline-block;width:10px;height:10px;background:var(--accent);border-radius:50%;margin-left:6px;vertical-align:0.4em;box-shadow:0 0 18px var(--accent)}
+.article-subtitle{font-family:'Noto Serif SC',serif;font-size:18px;color:var(--text-mute);line-height:1.65;margin-bottom:48px;font-weight:300;padding-bottom:36px;border-bottom:1px solid var(--border)}
+
+.article-body h2{font-family:'Noto Serif SC',serif;font-size:28px;font-weight:400;margin:64px 0 24px;letter-spacing:0.03em;color:var(--text);position:relative;padding-left:18px}
+.article-body h2::before{content:"";position:absolute;left:0;top:0.5em;width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 14px var(--accent)}
+.article-body h3{font-family:'Noto Serif SC',serif;font-size:18px;font-weight:500;margin:32px 0 14px;color:var(--text)}
+.article-body p{font-family:'Noto Sans SC',sans-serif;font-size:15.5px;color:var(--text);line-height:1.95;margin-bottom:20px;font-weight:300;text-wrap:pretty}
+.article-body strong{font-weight:500;color:var(--text);background:linear-gradient(180deg,transparent 60%,rgba(255,160,180,0.18) 60%);padding:0 2px}
+.article-body em{font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--accent)}
+.article-body ul{margin:18px 0 24px;padding-left:0;list-style:none}
+.article-body ul li{font-family:'Noto Sans SC',sans-serif;font-size:15px;color:var(--text);line-height:1.85;margin-bottom:12px;padding-left:24px;position:relative;font-weight:300}
+.article-body ul li::before{content:"—";position:absolute;left:0;top:0;color:var(--accent);font-family:'Cormorant Garamond',serif}
+.article-body blockquote{margin:36px 0;padding:24px 28px;background:rgba(20,16,48,0.55);border-left:2px solid var(--accent);border-radius:0 12px 12px 0;backdrop-filter:blur(8px)}
+.article-body blockquote p{font-family:'Noto Serif SC',serif;font-size:16px;font-style:italic;color:var(--text);margin-bottom:0;line-height:1.85;font-weight:300}
+
+.box{margin:32px 0;padding:28px 30px;background:rgba(20,16,48,0.6);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(8px);position:relative;overflow:hidden}
+.box::before{content:"";position:absolute;left:0;top:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.box-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:16px;font-weight:400}
+.box ul{margin:0}
+.box ul li{font-size:14px}
+.box p{font-size:14.5px;line-height:1.85;color:var(--text-mute)}
+
+.framework{display:grid;grid-template-columns:1fr;gap:8px;margin:28px 0 32px}
+.level{display:grid;grid-template-columns:80px 1fr;gap:20px;padding:18px 22px;background:rgba(20,16,48,0.4);border:1px solid var(--border);border-radius:12px;align-items:start;transition:all 0.3s;backdrop-filter:blur(6px)}
+.level:hover{border-color:var(--border-hover);background:rgba(30,22,68,0.55)}
+.level-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;color:var(--accent);letter-spacing:0.1em;padding-top:2px}
+.level-name{font-family:'Noto Serif SC',serif;font-size:15px;color:var(--text);margin-bottom:6px;font-weight:500}
+.level-desc{font-family:'Noto Sans SC',sans-serif;font-size:13px;color:var(--text-mute);line-height:1.7;font-weight:300}
+
+@media(max-width:768px){
+  .hero{padding:48px 0 32px}
+  .articles{grid-template-columns:1fr}
+  .framework-key{grid-template-columns:repeat(2,1fr)}
+  .article-view{padding:32px 22px 60px}
+  .article-body h2{font-size:24px}
+  .level{grid-template-columns:1fr;gap:6px}
+}
+</style>
+</head>
+<body>
+<script>(function(){var s=localStorage.getItem('kimiPalette');if(s)window.__KIMI_PALETTE__=s;})();</script>
+<script src="kimi-no-na-wa.js"></script>
+
+<div id="listView">
+<div class="container">
+  <nav class="kimi-nav">
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html">AI 工具箱</a>
+      <a href="course.html" class="active">课程拆解</a>
+      <a href="works.html">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Insights · 02</div>
+    <div class="jp-title">課程拆解</div>
+    <h1>课程拆解<span class="en">Doctrine · Method · Tactic · Tool</span></h1>
+    <p class="lede">把听过的课、读过的书，拆成自己的认知工具。<br>不抄笔记、不做摘要——用「道法术器」四层框架，从理论到行动一次穿透。</p>
+  </section>
+
+  <div class="framework-key">
+    <div class="fw-cell"><div class="ja">Doctrine</div><div class="ch">道</div><div class="desc">底层逻辑 · 这个理论到底在说什么</div></div>
+    <div class="fw-cell"><div class="ja">Method</div><div class="ch">法</div><div class="desc">框架结构 · 把抽象拆成可识别的层级</div></div>
+    <div class="fw-cell"><div class="ja">Tactic</div><div class="ch">术</div><div class="desc">操作动作 · 在真实场景里怎么使</div></div>
+    <div class="fw-cell"><div class="ja">Tool</div><div class="ch">器</div><div class="desc">工具杠杆 · 把方法固化成日常装备</div></div>
+  </div>
+
+  <div class="list-label">
+    <span class="ja">阅读</span>
+    <span class="en">Articles</span>
+    <span class="line"></span>
+  </div>
+
+  <div class="articles">
+    <div class="article-card" onclick="showArticle('article1')">
+      <div class="num">01 — 道法术器拆解</div>
+      <div class="tag-row"><span class="ctag">心理学</span><span class="ctag">自我管理</span></div>
+      <div class="title-zh">自我决定理论与内驱保护</div>
+      <div class="title-en">Self-Determination · SDT</div>
+      <div class="summary">读完万维钢那篇关于 SDT 的文章后，用道法术器框架做了完整拆解。核心收获：不是所有事都要找到内驱力，但必须识别"心里的鞭子"——以及环境如何把第 6 层好奇心一步步斩到第 2 层焦虑。</div>
+      <div class="arrow">→ 阅读全文</div>
+    </div>
+    <div class="article-card" onclick="showArticle('article2')">
+      <div class="num">02 — 道法术器拆解</div>
+      <div class="tag-row"><span class="ctag">行为模式</span><span class="ctag">人生复利</span></div>
+      <div class="title-zh">复利人生：18-25 岁该养成的行为模式</div>
+      <div class="title-en">Compounding · Life Capital</div>
+      <div class="summary">从一次亲密关系冲突的处理出发，串起复利思维、七种人生资本、正负飞轮、四个高密度心法。核心：复利的关键不是利率，是早开始 + 不爆仓 + 用 AI 把好模式固化下来。</div>
+      <div class="arrow">→ 阅读全文</div>
+    </div>
+  </div>
+
+  <footer class="kimi-footer">
+    <span><a href="index.html">← 返回首页</a></span>
+    <span>Wenzhe Ye · 2026</span>
+  </footer>
+</div>
+</div>
+
+<!-- Article 1 -->
+<div class="article-view" id="article1">
+  <a class="article-back" onclick="hideArticle();return false;">← 返回列表</a>
+  <div class="article-meta">第 01 篇 · 道法术器拆解 · 心理学 × 自我管理</div>
+  <h1>SDT<span class="dot"></span></h1>
+  <p class="article-subtitle">自我决定理论：从「被迫学」到「我想做」的六层阶梯</p>
+
+  <div class="article-body">
+    <h2>道 — 这个理论到底在说什么</h2>
+    <p>自我决定理论（Self-Determination Theory，SDT）是心理学家 Deci 和 Ryan 提出的动机理论。核心观点只有一句话：<strong>人有三种天生的心理营养需求——自主感、胜任感、关系感</strong>。满足这三种需求，人就会自发行动；被剥夺任何一种，动力就会衰减。</p>
+    <p>这三种营养不是「奖励」，而是「土壤」。没有奖励人还能活，没有土壤种子不会发芽。</p>
+    <div class="box">
+      <div class="box-title">三种心理营养</div>
+      <ul>
+        <li><strong>Autonomy（自主感）</strong>— 这件事是我自己选的，不是被逼的</li>
+        <li><strong>Competence（胜任感）</strong>— 我能做到，而且越做越好</li>
+        <li><strong>Relatedness（关系感）</strong>— 我做的事被重要的人认可、我在和人连接</li>
+      </ul>
+    </div>
+
+    <h2>法 — 动机的六层阶梯</h2>
+    <p>SDT 把人的动机从低到高分为六层。不是说高层一定比低层好——很多任务天然就是「不有趣的」，硬要爬到第六层反而会长出新的鞭子。关键是<strong>识别自己在哪一层，以及是什么把自己拽下去的</strong>。</p>
+    <div class="framework">
+      <div class="level"><div class="level-num">LEVEL 1</div><div><div class="level-name">Amotivation · 无动机</div><div class="level-desc">完全不想做，看不到任何意义。「我不知道为什么要学这个。」</div></div></div>
+      <div class="level"><div class="level-num">LEVEL 2</div><div><div class="level-name">External · 外部调节</div><div class="level-desc">为了外部奖惩而做。「不做会挂科」「做了能拿奖学金」</div></div></div>
+      <div class="level"><div class="level-num">LEVEL 3</div><div><div class="level-name">Introjected · 内摄调节</div><div class="level-desc">被内化的压力驱动。「不做会焦虑」「别人都在做我不做就落后了」— <em>这就是「心里的鞭子」</em></div></div></div>
+      <div class="level"><div class="level-num">LEVEL 4</div><div><div class="level-name">Identified · 认同调节</div><div class="level-desc">认同这件事的价值。「虽然不好玩，但对我的目标有用」</div></div></div>
+      <div class="level"><div class="level-num">LEVEL 5</div><div><div class="level-name">Integrated · 整合调节</div><div class="level-desc">和自我身份融为一体。「做这件事就是我是谁的一部分」</div></div></div>
+      <div class="level"><div class="level-num">LEVEL 6</div><div><div class="level-name">Intrinsic · 内在动机</div><div class="level-desc">纯粹因为喜欢、好奇、享受而做。「做的过程本身就是奖励」</div></div></div>
+    </div>
+
+    <h2>术 — 识别「被斩下去」的机制</h2>
+    <p>大多数人不是从来就没有内驱力——而是被环境「斩」下去了。最常见的三种斩杀机制：</p>
+    <h3>机制一：外部调节挤掉内驱</h3>
+    <p>本来对一件事有好奇心（第 6 层），一旦引入分数、排名、KPI，动机就被替换成「为分数而做」（第 2 层）。好奇心没有消失，只是被更响亮的声音盖住了。</p>
+    <h3>机制二：量化锚点偷换胜任感</h3>
+    <p>「做了多少题 = 学得好不好」这种量化标准，会把真正的胜任感（我理解了、我会用了）替换成数字焦虑（我刷得不够多）。结果是：<strong>学会了但刷得少 = 不爽</strong>，胜任感被劫持。</p>
+    <h3>机制三：同辈压力激活内摄</h3>
+    <p>看到周围人都在卷，「我不做就落后」的焦虑会自动生长。这不是外部奖励驱动的（第 2 层），是自己长出来的鞭子（第 3 层）——比外部压力更隐蔽、更难摆脱。</p>
+    <div class="box">
+      <div class="box-title">SDT 三问试纸（每周自检）</div>
+      <ul>
+        <li><strong>没人看着我，我还做吗？</strong> — 否 = 外部调节</li>
+        <li><strong>同龄人都不做了，我还做吗？</strong> — 否 = 内摄调节（心里的鞭子）</li>
+        <li><strong>做完是消耗还是充电？</strong> — 消耗 = 可能掉到了第 3 层以下</li>
+      </ul>
+      <p style="margin-top:12px;font-size:13px;color:var(--text-soft)">任一答错 = 动机层级在下降，需要排查是哪种机制在起作用。</p>
+    </div>
+
+    <h2>器 — 三件武器</h2>
+    <p>识别出问题之后，有三种武器可以用：</p>
+    <h3>武器一：重构叙事</h3>
+    <p>把「我是被迫修这门课的学生」重构成「我是做 XX 的人，这门课是我路径上的一站」。身份变了，同一件事的感知就从「被推着走」变成「自己选的路」。这是 SDT 第 5 层（整合调节）的核心动作。</p>
+    <h3>武器二：微决策</h3>
+    <p>自主感不需要「完全自由选择」才能满足。每天给自己 2-3 个微小的选择权（先做 A 还是 B？用方法 1 还是方法 2？），就能在结构化任务中保持「是我自己在掌控」的感觉。</p>
+    <h3>武器三：时间审计</h3>
+    <p>每周花 5 分钟算一下：「为自己做 XX 的时间」÷「为绩点/他人做 XX 的时间」。如果比值连续两周低于 1/3，说明火苗在被偷走，需要立刻调整。</p>
+    <blockquote><p>不是所有事都要爬到第 6 层。很多任务是有意义但不有趣的。正确策略是工具化——高效拿分，把火力留给真正想做的事。强行给每件事找内驱力，反而会长出新的鞭子。</p></blockquote>
+
+    <h2>我的应用 — 把理论变成行动</h2>
+    <p>读完 SDT 之后，我做了三件事：</p>
+    <ul>
+      <li><strong>身份重构</strong>：从「修 XX 课的计算机系学生」变成「做 AI 产品的人，顺便修了这门课」。这让我不再被单一课程定义「我是谁」。</li>
+      <li><strong>识别机制三连击</strong>：诊断出一门课学得累的精准根因——外部调节挤掉内驱、量化锚点偷换胜任感、同辈卷激活内摄。不是「我不行」，是三个机制同时在起作用。</li>
+      <li><strong>建立「第二栏」</strong>：每周必须有「为自己做东西」的时间——不限规模，10 行代码也算。唯一规则是不为绩点、不为别人。第二栏归零 = 第 6 层熄灭警报。</li>
+    </ul>
+    <div class="box">
+      <div class="box-title">核心要点</div>
+      <p>内驱保护比内驱建立更紧迫。火苗已经在身上（「做产品比做作业开心」是纯净的第 6 层描述），最大的风险不是某门课考不好，是绩点把真正想做的事的时间挤光。</p>
+    </div>
+  </div>
+</div>
+
+<!-- Article 2 -->
+<div class="article-view" id="article2">
+  <a class="article-back" onclick="hideArticle();return false;">← 返回列表</a>
+  <div class="article-meta">第 02 篇 · 道法术器拆解 · 行为模式 × 人生复利</div>
+  <h1>复利人生<span class="dot"></span></h1>
+  <p class="article-subtitle">18-25 岁最该养成的行为模式</p>
+
+  <div class="article-body">
+    <h2>道 — 复利的关键不是利率，是开始得早 + 不爆仓</h2>
+    <p>大多数人都听过「每天进步 1%，365 天成长 37 倍」。但这句话是错的——人的状态不恒定，不可能每天都是 1%。真正该记住的不是利率本身，而是复利的三个条件：<strong>早开始、不爆仓、长期持有</strong>。</p>
+    <p>利率决定你当下跑多快，时间决定你能跑多远。巴菲特年化 22%，西蒙斯 66%，差了三倍，但巴菲特身价碾压——因为他 10 岁就开始投资，比西蒙斯早了 40 年。同样的道理放到人生上：<strong>18-25 岁是整个人生成长利率最高的阶段</strong>。这个阶段往自己身上投的每一块钱、每一小时，利息要复利 60 年。</p>
+    <p>但这不意味着要追求超高利率。身边那些真正厉害的人，拼的不是「利率有多高」，而是「开始得有多早」加上「过程中没有犯大错」。99% 追求超高利率的年轻人最终都爆仓了——用杠杆炒币炒股，亏光积蓄甚至背上负债。不爆仓的关键是底线思维：<strong>关系不能崩、健康不能垮、信誉不能丢</strong>。任何一方面爆仓，积累就归零，后面的人生还要偿还之前的债。</p>
+    <div class="box">
+      <div class="box-title">复利三条件</div>
+      <ul>
+        <li><strong>早开始</strong> — 决定 80%。18 岁开始和 30 岁开始，复利结果天差地别</li>
+        <li><strong>不爆仓</strong> — 你可以犯错，但不能让错误影响后面的脚步。底线：关系、健康、信誉</li>
+        <li><strong>长期持有</strong> — 探索阶段结束后，选定方向坚持 30 年。但前提是你已经知道什么是好方向</li>
+      </ul>
+    </div>
+    <blockquote><p>反直觉：大部分年轻人觉得「利率」最重要，总想找一条暴富的路。但真正拉开差距的，是「早开始 + 不爆仓」。开始得早、过程中不犯致命错误，比短期高收益重要 10 倍。</p></blockquote>
+
+    <h2>法 — 人生由七种资本组成</h2>
+    <p>人生不只是钱。万维刚老师提出的七种资本框架，把「一个人值多少钱」拆成了七个维度：<strong>金钱、人力、健康、社会、声望、心理、体验</strong>。你当前在每个维度有多少，反映的是你过去的行为模式。</p>
+    <p>有人中了彩票，金钱资本暴增，但行为模式没变，几年后全部亏回去——「德不配位」说的就是这个：你的行为模式配不上你当前的资本，资本就会回落。明星塌房、暴发户返贫，本质都是同一回事。</p>
+    <p>更反直觉的是：18-25 岁最该投入的不是金钱资本，而是<strong>人力、健康、心理、社会</strong>这四个。原因很简单——这四个复利周期最长、利率最高，要用一辈子。金钱可以 30 岁以后猛赚，但身体和心理 25 岁就崩了，后面几十年都是在还债。</p>
+    <div class="box">
+      <div class="box-title">七种人生资本</div>
+      <ul>
+        <li><strong>金钱资本</strong> — 你现在有多少钱</li>
+        <li><strong>人力资本</strong> — 你会什么、判断力多强</li>
+        <li><strong>健康资本</strong> — 身体、精力、睡眠、情绪稳定度</li>
+        <li><strong>社会资本</strong> — 你认识谁、谁会为你背书</li>
+        <li><strong>声望资本</strong> — 陌生人听到你名字的反应</li>
+        <li><strong>心理资本</strong> — 自控力、韧性、面对挫折的能力</li>
+        <li><strong>体验资本</strong> — 你做过难事、住过的地方、见过的世面</li>
+      </ul>
+    </div>
+
+    <h2>术 — 正飞轮 vs 负飞轮，四个高密度心法</h2>
+    <h3>行为模式有正负之分</h3>
+    <p><strong>正飞轮</strong>：每次做一个行为，下次更容易做同样的行为，同时资本在涨。比如早睡 → 精力好 → 白天效率高 → 不用熬夜 → 更想早睡。</p>
+    <p><strong>负飞轮</strong>：每次做一个行为，下次更容易做，但资本在跌。比如熬夜 → 精力差 → 效率低 → 更要熬夜补。</p>
+    <p>复利不是每天做什么动作，而是做的时候用什么模式。两个人都每天读书 1 小时，一个读完打卡发朋友圈就结束了，另一个读完想「这个东西怎么用在我的项目上」——十年后差距巨大。</p>
+    <h3>四个高密度心法</h3>
+    <p><strong>高密度体验</strong> — 主动去做让你紧张的事。公开展示、谈判、带团队、被拒绝——你躲掉的每一次紧张，都是在躲掉一次让自己变强的机会。</p>
+    <p><strong>高密度学习</strong> — 遇到问题第一反应是「已经有人解决过了，我要去找」。花钱请教有结果的人，一小时省你一个月试错。</p>
+    <p><strong>高密度思考</strong> — 一件事发生后，用一段时间复盘：为什么会这样？下次怎么做不同？背后的规律是什么？但只思考不行动 = 负收益。</p>
+    <p><strong>高密度行动</strong> — 想明白的 24 小时内必须实践一次。你收藏的东西 99% 终身不会看，但你立刻用过一次的东西一辈子难忘。</p>
+    <div class="box">
+      <div class="box-title">四个高密度的关系</div>
+      <p>体验是原料，学习是加速器，思考是提纯器，行动是落地。四个都高密度，两年可以拿别人十年的结果。</p>
+    </div>
+
+    <h2>器 — AI 是行为模式迭代的杠杆</h2>
+    <p>行为模式很难改变，因为它是无意识的。AI 的价值在于：它能把你的模式「可视化」，帮你看到自己看不到的东西。</p>
+    <p>和人发生冲突后，把整个过程从头到尾讲给 AI 听，让它用第三人称分析你在什么模式里——大多数时候，我们只能看到对方的问题，看不到自己的。AI 能帮你跳出情绪，用「共鸣模式」替代「比较模式」，用「认知解耦」把事情和人分开。</p>
+    <p>每一次体验、学习、思考、行动的闭环，都可以沉淀到 AI 知识库里。你解决过的每一个问题，以后遇到同类问题直接调用——这就是复利工程：让 AI 和你一起进化，你变强它也变强。</p>
+    <blockquote><p>AI 不是替你做决策，是帮你执行你自己设定的方向。你下注了、去干了，AI 能让你跑得比绝大多数人都快。但你不下注，AI 算 100 年也算不出你该怎么办。</p></blockquote>
+
+    <h2>我的应用</h2>
+    <ul>
+      <li><strong>建立心理账户意识</strong>：每次处理关系时想清楚——这个行为是在存钱还是取钱？</li>
+      <li><strong>用 AI 做冲突复盘</strong>：把事情讲给 AI 听，让它分析我的行为模式，结合理论找到更好的处理方式。</li>
+      <li><strong>把课程内容做成知识库</strong>：把内容沉淀成可搜索、可调用的资产——这就是行为模式层面的复利。</li>
+    </ul>
+    <div class="box">
+      <div class="box-title">核心要点</div>
+      <p>18-25 岁最该养成的不是某个具体技能，而是让自己越活越爽的行为模式。复利的关键是早开始 + 不爆仓；最该投入的是人力、健康、心理、社会；行为模式是资本涨跌的真实载体；AI 是把好模式固化下来的杠杆。别找唯一正确的答案，先跑起来——20 岁犯的错都来得及补。</p>
+    </div>
+  </div>
+</div>
+
+<script>
+function showArticle(id){
+  document.getElementById('listView').style.display='none';
+  document.querySelectorAll('.article-view').forEach(function(el){el.classList.remove('active')});
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+  history.replaceState(null,'','#'+(id==='article1'?'sdt':'compound'));
+}
+function hideArticle(){
+  document.querySelectorAll('.article-view').forEach(function(el){el.classList.remove('active')});
+  document.getElementById('listView').style.display='block';
+  window.scrollTo(0,0);
+  history.replaceState(null,'',location.pathname);
+}
+if(location.hash==='#sdt')showArticle('article1');
+if(location.hash==='#compound')showArticle('article2');
+</script>
+<script src="kimi-tweaks.js"></script>
+</body>
+</html>

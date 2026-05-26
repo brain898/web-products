@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集 — 叶文哲</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1A1A1C;--bg-card:#222226;--border:#2D2D30;--border-hover:#404048;--text:#FAFAFA;--text-mute:#A0A0A8;--text-soft:#6A6A72;--accent:#E8B86D}
+body{background:var(--bg);color:var(--text);font-family:'Inter','Noto Sans SC',sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+.container{max-width:1240px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+nav{padding:32px 0;display:flex;justify-content:space-between;align-items:center}
+nav .logo{font-family:'Inter',sans-serif;font-size:20px;font-weight:600;letter-spacing:-0.03em;color:var(--text);text-decoration:none;transition:color 0.2s}
+nav .logo:hover{color:var(--accent)}
+nav .menu{display:flex;gap:40px;font-size:14px}
+nav .menu a{color:var(--text-mute);text-decoration:none;transition:color 0.2s;font-weight:400}
+nav .menu a:hover{color:var(--text)}
+nav .menu a.active{color:var(--text)}
+
+.page-header{padding:100px 0 60px;opacity:0;animation:fadeUp 0.6s ease forwards 0.1s}
+.page-header .label{font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:24px;font-weight:500}
+.page-header h1{font-family:'Inter',sans-serif;font-size:clamp(40px,6vw,80px);font-weight:200;letter-spacing:-0.05em;line-height:1}
+.page-header h1 .strong{font-weight:600}
+.page-header .subtitle{font-family:'Noto Sans SC',sans-serif;font-size:16px;color:var(--text-mute);margin-top:20px;font-weight:300;line-height:1.6}
+
+.works-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;padding-bottom:120px}
+
+.work-card{background:var(--bg-card);border:1px solid var(--border);border-radius:24px;padding:36px 32px;text-decoration:none;color:var(--text);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;opacity:0;animation:fadeUp 0.6s ease forwards}
+.work-card:nth-child(1){animation-delay:0.2s}
+.work-card:nth-child(2){animation-delay:0.3s}
+.work-card:nth-child(3){animation-delay:0.4s}
+.work-card:nth-child(4){animation-delay:0.5s}
+.work-card:nth-child(5){animation-delay:0.6s}
+.work-card:nth-child(6){animation-delay:0.7s}
+.work-card:hover{background:#2A2A2E;border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 30px 60px -20px rgba(0,0,0,0.5)}
+
+.work-card .card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+.work-card .card-num{font-family:'Inter',sans-serif;font-size:12px;color:var(--text-soft);font-weight:400;letter-spacing:0.05em}
+.work-card .card-tag{font-family:'Inter',sans-serif;font-size:11px;color:var(--accent);background:rgba(232,184,109,0.1);padding:4px 10px;border-radius:100px;font-weight:500;letter-spacing:0.03em}
+
+.work-card .card-title{font-family:'Inter',sans-serif;font-size:24px;font-weight:500;letter-spacing:-0.02em;margin-bottom:6px;line-height:1.2}
+.work-card .card-title-cn{font-family:'Noto Sans SC',sans-serif;font-size:13px;color:var(--text-mute);margin-bottom:20px;font-weight:300}
+.work-card .card-desc{font-family:'Noto Sans SC',sans-serif;font-size:14px;color:var(--text-mute);line-height:1.7;flex:1;font-weight:300}
+
+.work-card .card-stack{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap}
+.work-card .stack-tag{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:6px;font-weight:400}
+
+.work-card .card-link{margin-top:20px;font-family:'Inter',sans-serif;font-size:13px;color:var(--accent);font-weight:500;transition:transform 0.3s;display:inline-block}
+.work-card:hover .card-link{transform:translateX(4px)}
+
+footer{padding:48px 0;border-top:1px solid var(--border);font-family:'Inter',sans-serif;font-size:13px;color:var(--text-soft);display:flex;justify-content:space-between;font-weight:400}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:768px){
+  .works-grid{grid-template-columns:1fr}
+  nav .menu{gap:24px;font-size:13px}
+  .container{padding:0 24px}
+  .page-header{padding:80px 0 40px}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html">AI 工具箱</a>
+      <a href="course.html">课程拆解</a>
+      <a href="works.html" class="active">作品集</a>
+    </div>
+  </nav>
+
+  <section class="page-header">
+    <div class="label">精选作品</div>
+    <h1>作品集<span class="strong">.</span></h1>
+    <p class="subtitle">用 AI 做出能用的东西。每个项目都是从一个真实需求出发，快速验证，快速上线。</p>
+  </section>
+
+  <div class="works-grid">
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">01</span>
+        <span class="card-tag">静态网站</span>
+      </div>
+      <div class="card-title">AI 工具箱</div>
+      <div class="card-title-cn">AI Toolbox</div>
+      <div class="card-desc">2026 年 AI 模型与工具精选导航站。37 张精选卡片覆盖知识问答、代码开发、视觉创作等 8 大场景，支持海外 / 国内分类筛选。GitHub Actions 每 3 天自动搜索最新动态并刷新数据，始终保持时效性。</div>
+      <div class="card-stack">
+        <span class="stack-tag">HTML / CSS / JS</span>
+        <span class="stack-tag">GitHub Actions</span>
+        <span class="stack-tag">LLM API</span>
+        <span class="stack-tag">Web Search</span>
+      </div>
+      <a class="card-link" href="toolbox.html">查看工具箱 &rarr;</a>
+    </div>
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">02</span>
+        <span class="card-tag">自动化</span>
+      </div>
+      <div class="card-title">行情日报机器人</div>
+      <div class="card-title-cn">Market Daily Report</div>
+      <div class="card-desc">朋友的投资需求衍生出的自动化产品。GitHub Actions 定时触发，Python 脚本抓取行情数据，调用 LLM API 生成中文分析简报，自动推送到微信。从「帮个忙」到「可复用产品」的典型路径。</div>
+      <div class="card-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">GitHub Actions</span>
+        <span class="stack-tag">LLM API</span>
+        <span class="stack-tag">Web Scraping</span>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">03</span>
+        <span class="card-tag">全栈应用</span>
+      </div>
+      <div class="card-title">问卷悬赏平台</div>
+      <div class="card-title-cn">Survey Bounty</div>
+      <div class="card-desc">从行情日报衍生出的问卷工具，逐步迭代成全栈平台。支持用户注册登录、创建和发布问卷、数据收集与分析。Next.js + Supabase 架构，Vercel 部署，自定义域名上线。</div>
+      <div class="card-stack">
+        <span class="stack-tag">Next.js 16</span>
+        <span class="stack-tag">Supabase</span>
+        <span class="stack-tag">Tailwind CSS</span>
+        <span class="stack-tag">Vercel</span>
+      </div>
+      <a class="card-link" href="https://survey.wzye.top/" target="_blank" rel="noopener">访问问卷平台 &rarr;</a>
+    </div>
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">04</span>
+        <span class="card-tag">可视化</span>
+      </div>
+      <div class="card-title">课程知识库</div>
+      <div class="card-title-cn">Knowledge Base</div>
+      <div class="card-desc">把课程笔记从线性文档变成可探索的知识库。碎片知识整合成结构化的学习地图，支持搜索和关联查询，帮助理解概念之间的联系。</div>
+      <div class="card-stack">
+        <span class="stack-tag">HTML / CSS / JS</span>
+        <span class="stack-tag">Knowledge Base</span>
+        <span class="stack-tag">AI Analysis</span>
+      </div>
+      <a class="card-link" href="https://knowledge2-d63.pages.dev/" target="_blank" rel="noopener">访问知识库 &rarr;</a>
+    </div>
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">05</span>
+        <span class="card-tag">内容机器人</span>
+      </div>
+      <div class="card-title">每日 AI 日报</div>
+      <div class="card-title-cn">Daily AI News</div>
+      <div class="card-desc">自动抓取主流 AI 模型和工具的更新动态，用 LLM 整理成结构化日报。每天早上推送，不用刷 Twitter 也能掌握 AI 领域最新进展。Claude Code 终端里完成开发。</div>
+      <div class="card-stack">
+        <span class="stack-tag">Claude Code</span>
+        <span class="stack-tag">LLM API</span>
+        <span class="stack-tag">Web Scraping</span>
+        <span class="stack-tag">Automation</span>
+      </div>
+      <a class="card-link" href="ai-daily-qr.html">扫码入群看日报 &rarr;</a>
+    </div>
+
+    <div class="work-card">
+      <div class="card-top">
+        <span class="card-num">06</span>
+        <span class="card-tag">学习工具</span>
+      </div>
+      <div class="card-title">Gemini 学习教练</div>
+      <div class="card-title-cn">Gemini Study Coach</div>
+      <div class="card-desc">基于 Gemini 的学科问答助手。按学科定制 prompt 模板，把 AI 变成私教——不懂的概念直接问，自动出练习题，按掌握程度调整难度。从被动听课变成主动学习。</div>
+      <div class="card-stack">
+        <span class="stack-tag">Gemini API</span>
+        <span class="stack-tag">Prompt Engineering</span>
+        <span class="stack-tag">Custom Templates</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <span>Built with Claude Code</span>
+    <span>2026</span>
+  </footer>
+</div>
+</body>
+</html>

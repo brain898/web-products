@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>作品集 — 叶文哲</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400&family=Noto+Serif+SC:wght@300;400;500;600&family=Noto+Sans+SC:wght@200;300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="kimi-shared.css">
+<style>
+.hero{padding:80px 0 56px;position:relative}
+.hero .label{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);letter-spacing:0.3em;text-transform:uppercase;margin-bottom:20px;font-weight:400;opacity:0;animation:fadeUp 0.8s ease forwards 0.1s}
+.hero .label::before{content:"";display:inline-block;width:24px;height:1px;background:var(--accent);vertical-align:middle;margin-right:12px;opacity:0.7}
+.hero .jp-title{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:18px;color:var(--accent);letter-spacing:0.05em;margin-bottom:8px;opacity:0;animation:fadeUp 0.8s ease forwards 0.2s;font-weight:300}
+.hero h1{font-family:'Noto Serif SC',serif;font-size:clamp(48px,7vw,96px);font-weight:300;letter-spacing:0.02em;line-height:1.05;margin-bottom:24px;opacity:0;animation:fadeUp 0.9s ease forwards 0.28s}
+.hero h1 .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;font-size:0.42em;color:var(--text-mute);display:block;margin-top:14px;letter-spacing:0.05em}
+.hero .lede{font-family:'Noto Sans SC',sans-serif;font-size:15px;color:var(--text-mute);max-width:680px;line-height:1.95;font-weight:300;opacity:0;animation:fadeUp 0.8s ease forwards 0.4s}
+
+.list-label{display:flex;align-items:center;gap:16px;margin-bottom:28px;opacity:0;animation:fadeUp 0.8s ease forwards 0.55s}
+.list-label .ja{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0.1em}
+.list-label .en{font-family:'Inter',sans-serif;font-size:11px;color:var(--text-soft);text-transform:uppercase;letter-spacing:0.3em}
+.list-label .line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.list-label .meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-soft);letter-spacing:0.05em}
+
+.works{display:grid;grid-template-columns:1fr;gap:18px;padding-bottom:60px}
+
+.work{background:var(--card);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:20px;padding:36px 40px;display:grid;grid-template-columns:120px 1fr 220px;gap:36px;align-items:start;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);text-decoration:none;color:var(--text);position:relative;overflow:hidden;opacity:0;animation:fadeUp 0.8s ease forwards}
+.work:nth-child(1){animation-delay:0.6s}.work:nth-child(2){animation-delay:0.66s}.work:nth-child(3){animation-delay:0.72s}.work:nth-child(4){animation-delay:0.78s}.work:nth-child(5){animation-delay:0.84s}.work:nth-child(6){animation-delay:0.9s}
+.work::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent);transform:scaleY(0);transform-origin:top;transition:transform 0.5s cubic-bezier(0.16,1,0.3,1)}
+.work::after{content:"";position:absolute;right:-100px;top:-100px;width:300px;height:300px;background:radial-gradient(circle,var(--thread),transparent 60%);opacity:0;transition:opacity 0.6s;pointer-events:none}
+.work:hover{background:var(--card-hover);border-color:var(--border-hover);transform:translateY(-2px);box-shadow:0 30px 60px -20px rgba(0,0,0,0.6)}
+.work:hover::before{transform:scaleY(1)}
+.work:hover::after{opacity:0.18}
+
+.work-num{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0.08em;display:flex;flex-direction:column;gap:8px}
+.work-num .big{font-size:64px;font-style:italic;font-weight:300;line-height:0.9;color:var(--text);font-family:'Cormorant Garamond',serif}
+.work-num .ja{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:11px;color:var(--text-soft);letter-spacing:0.18em;text-transform:uppercase}
+
+.work-body{position:relative;z-index:1}
+.work-tag{display:inline-block;padding:3px 10px;border-radius:10px;background:rgba(168,144,255,0.14);color:#c8b8ff;font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.12em;font-weight:500;text-transform:uppercase;margin-bottom:12px}
+.work-title{font-family:'Noto Serif SC',serif;font-size:28px;font-weight:400;color:var(--text);margin-bottom:4px;letter-spacing:0.02em;line-height:1.2}
+.work-title-en{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:16px;color:var(--accent);margin-bottom:18px;letter-spacing:0.03em;font-weight:300}
+.work-desc{font-family:'Noto Sans SC',sans-serif;font-size:14px;color:var(--text-mute);line-height:1.85;font-weight:300;text-wrap:pretty}
+
+.work-side{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.work-stack{display:flex;flex-wrap:wrap;gap:6px}
+.stack-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-soft);background:rgba(255,255,255,0.04);padding:4px 9px;border-radius:6px;border:1px solid var(--border);letter-spacing:0.02em}
+.work-link{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--accent);transition:transform 0.3s;letter-spacing:0.04em;display:inline-flex;align-items:center;gap:8px}
+.work:hover .work-link{transform:translateX(4px)}
+.work-status{font-family:'Inter',sans-serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-soft);display:flex;align-items:center;gap:8px}
+.work-status .pulse{width:6px;height:6px;border-radius:50%;background:#86d99e;box-shadow:0 0 10px #86d99e}
+.work-status.live{color:#86d99e}
+.work-status.dev .pulse{background:#ffb098;box-shadow:0 0 10px #ffb098}
+.work-status.dev{color:var(--accent)}
+
+@media(max-width:900px){
+  .work{grid-template-columns:1fr;gap:18px;padding:28px 26px}
+  .work-num{flex-direction:row;align-items:baseline;gap:14px}
+  .work-num .big{font-size:42px}
+}
+@media(max-width:768px){
+  .hero{padding:48px 0 36px}
+}
+</style>
+</head>
+<body>
+<script>(function(){var s=localStorage.getItem('kimiPalette');if(s)window.__KIMI_PALETTE__=s;})();</script>
+<script src="kimi-no-na-wa.js"></script>
+
+<div class="container">
+  <nav class="kimi-nav">
+    <a class="logo" href="index.html">Wenzhe</a>
+    <div class="menu">
+      <a href="toolbox.html">AI 工具箱</a>
+      <a href="course.html">课程拆解</a>
+      <a href="works.html" class="active">作品集</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="label">Works · 03</div>
+    <div class="jp-title">作品集</div>
+    <h1>作品集<span class="en">Six Things I Built · 2025–2026</span></h1>
+    <p class="lede">每个项目都从朋友的一句话开始，几天时间做出来、上线、让人直接用。<br>不是 demo，是真的在跑——这就是我做产品的方式。</p>
+  </section>
+
+  <div class="list-label">
+    <span class="ja">六件作品</span>
+    <span class="en">Selected works</span>
+    <span class="line"></span>
+    <span class="meta">06 / 06</span>
+  </div>
+
+  <div class="works">
+
+    <a class="work" href="toolbox.html">
+      <div class="work-num"><span class="big">01</span><span class="ja">Toolbox</span></div>
+      <div class="work-body">
+        <div class="work-tag">静态网站 · 自动化</div>
+        <div class="work-title">AI 工具箱</div>
+        <div class="work-title-en">AI Toolbox</div>
+        <div class="work-desc">2026 年 AI 模型与工具精选导航站。37 张精选卡片覆盖知识问答、代码开发、视觉创作等 8 大场景，支持海外 / 国内分类筛选。GitHub Actions 每 3 天自动搜索最新动态并刷新数据，始终保持时效性。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status live"><span class="pulse"></span>LIVE</div>
+        <div class="work-stack">
+          <span class="stack-tag">HTML / CSS / JS</span>
+          <span class="stack-tag">GitHub Actions</span>
+          <span class="stack-tag">LLM API</span>
+          <span class="stack-tag">Web Search</span>
+        </div>
+        <span class="work-link">查看工具箱 →</span>
+      </div>
+    </a>
+
+    <div class="work" style="cursor:default">
+      <div class="work-num"><span class="big">02</span><span class="ja">Market</span></div>
+      <div class="work-body">
+        <div class="work-tag">自动化 · 内容机器人</div>
+        <div class="work-title">行情日报机器人</div>
+        <div class="work-title-en">Market Daily Report</div>
+        <div class="work-desc">朋友的投资需求衍生出的自动化产品。GitHub Actions 定时触发，Python 脚本抓取行情数据，调用 LLM API 生成中文分析简报，自动推送到微信。从「帮个忙」到「可复用产品」的典型路径。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status live"><span class="pulse"></span>RUNNING</div>
+        <div class="work-stack">
+          <span class="stack-tag">Python</span>
+          <span class="stack-tag">GitHub Actions</span>
+          <span class="stack-tag">LLM API</span>
+          <span class="stack-tag">WeCom Bot</span>
+        </div>
+        <span class="work-link" style="opacity:0.45">内部使用</span>
+      </div>
+    </div>
+
+    <a class="work" href="https://survey.wzye.top/" target="_blank" rel="noopener">
+      <div class="work-num"><span class="big">03</span><span class="ja">Survey</span></div>
+      <div class="work-body">
+        <div class="work-tag">全栈应用</div>
+        <div class="work-title">问卷悬赏平台</div>
+        <div class="work-title-en">Survey Bounty</div>
+        <div class="work-desc">从行情日报衍生出的问卷工具，逐步迭代成全栈平台。支持用户注册登录、创建和发布问卷、数据收集与分析。Next.js + Supabase 架构，Vercel 部署，自定义域名上线。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status live"><span class="pulse"></span>LIVE</div>
+        <div class="work-stack">
+          <span class="stack-tag">Next.js 16</span>
+          <span class="stack-tag">Supabase</span>
+          <span class="stack-tag">Tailwind</span>
+          <span class="stack-tag">Vercel</span>
+        </div>
+        <span class="work-link">survey.wzye.top →</span>
+      </div>
+    </a>
+
+    <a class="work" href="https://knowledge2-d63.pages.dev/" target="_blank" rel="noopener">
+      <div class="work-num"><span class="big">04</span><span class="ja">Knowledge</span></div>
+      <div class="work-body">
+        <div class="work-tag">可视化 · 知识图谱</div>
+        <div class="work-title">课程知识库</div>
+        <div class="work-title-en">Knowledge Base</div>
+        <div class="work-desc">把课程笔记从线性文档变成可探索的知识库。碎片知识整合成结构化的学习地图，支持搜索和关联查询，帮助理解概念之间的联系。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status live"><span class="pulse"></span>LIVE</div>
+        <div class="work-stack">
+          <span class="stack-tag">HTML / CSS / JS</span>
+          <span class="stack-tag">Knowledge Base</span>
+          <span class="stack-tag">AI Analysis</span>
+        </div>
+        <span class="work-link">knowledge2 →</span>
+      </div>
+    </a>
+
+    <a class="work" href="ai-daily-qr.html">
+      <div class="work-num"><span class="big">05</span><span class="ja">AI Daily</span></div>
+      <div class="work-body">
+        <div class="work-tag">内容机器人</div>
+        <div class="work-title">每日 AI 日报</div>
+        <div class="work-title-en">Daily AI News</div>
+        <div class="work-desc">自动抓取主流 AI 模型和工具的更新动态，用 LLM 整理成结构化日报。每天早上推送，不用刷 Twitter 也能掌握 AI 领域最新进展。Claude Code 终端里完成开发。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status live"><span class="pulse"></span>LIVE</div>
+        <div class="work-stack">
+          <span class="stack-tag">Claude Code</span>
+          <span class="stack-tag">LLM API</span>
+          <span class="stack-tag">Web Scraping</span>
+          <span class="stack-tag">Automation</span>
+        </div>
+        <span class="work-link">扫码入群 →</span>
+      </div>
+    </a>
+
+    <div class="work" style="cursor:default">
+      <div class="work-num"><span class="big">06</span><span class="ja">Coach</span></div>
+      <div class="work-body">
+        <div class="work-tag">学习工具</div>
+        <div class="work-title">Gemini 学习教练</div>
+        <div class="work-title-en">Gemini Study Coach</div>
+        <div class="work-desc">基于 Gemini 的学科问答助手。按学科定制 prompt 模板，把 AI 变成私教——不懂的概念直接问，自动出练习题，按掌握程度调整难度。从被动听课变成主动学习。</div>
+      </div>
+      <div class="work-side">
+        <div class="work-status dev"><span class="pulse"></span>IN DEV</div>
+        <div class="work-stack">
+          <span class="stack-tag">Gemini API</span>
+          <span class="stack-tag">Prompt Eng.</span>
+          <span class="stack-tag">Templates</span>
+        </div>
+        <span class="work-link" style="opacity:0.45">即将上线</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="kimi-footer">
+    <span><a href="index.html">← 返回首页</a></span>
+    <span>Wenzhe Ye · 2026</span>
+  </footer>
+</div>
+
+<script src="kimi-tweaks.js"></script>
+</body>
+</html>
